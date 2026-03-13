@@ -11,10 +11,10 @@ declare(strict_types=1);
         :root {
             --primary: #ff6b35;
             --primary-dark: #e25724;
-            --bg: #0f172a;
+            --bg: #d8d8d8ff;
             --bg-soft: #111827;
             --card-bg: #020617;
-            --text: #f9fafb;
+            --text: #ff6b35;
             --muted: #9ca3af;
             --success: #22c55e;
             --danger: #ef4444;
@@ -29,7 +29,7 @@ declare(strict_types=1);
         body {
             min-height: 100vh;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top left, #1f2937, #020617 55%, #000000);
+            background: white;
             color: var(--text);
             display: flex;
             align-items: center;

@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 class Conexao
 {
-    private const DB_HOST = '192.168.18.61';
+    private const DB_HOST = '10.91.45.61';
     private const DB_NAME = 'gestao-restaurante';
-    private const DB_USER = 'root';
-    private const DB_PASS = 'Pepemoreno123';
+    private const DB_USER = 'admin';
+    private const DB_PASS = '123456';
+    private const DB_CHARSET = 'utf8mb4';
     
 
     /**
