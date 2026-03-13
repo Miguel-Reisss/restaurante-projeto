@@ -64,7 +64,11 @@ class PedidoController
 
         $id = $this->pedidoModel->criar($dados);
 
-        header('Location: /index.php?controller=pedido&action=show&id=' . $id);
+        // Manda o cliente de volta pro Início com um alerta de sucesso
+        echo "<script>
+                alert('Pedido realizado com sucesso! Aguarde em sua mesa.');
+                window.location.href = 'index.php?page=home';
+              </script>";
         exit;
     }
 
@@ -105,7 +109,8 @@ class PedidoController
 
         $this->pedidoModel->atualizarStatus($id, $status);
 
-        header('Location: /index.php?controller=pedido&action=show&id=' . $id);
+        // Volta para a lista de pedidos após salvar!
+        header('Location: /index.php?controller=pedido&action=index');
         exit;
     }
 

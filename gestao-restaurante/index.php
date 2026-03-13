@@ -64,16 +64,32 @@ if ($controller !== null) {
 /**
  * Sem controller: roteamento básico para views "simples".
  */
+$viewFile = '';
+
 switch ($page) {
     case 'login':
-    default:
         $viewFile = VIEW_PATH . 'login.php';
-        if (!file_exists($viewFile)) {
-            http_response_code(500);
-            echo 'View de login não encontrada.';
-            exit;
-        }
-        require $viewFile;
+        break;
+    case 'cardapio':
+        $viewFile = VIEW_PATH . 'cardapio.php';
+        break;
+    case 'finalizar': // <--- ADICIONE ESTA ROTA
+        $viewFile = VIEW_PATH . 'finalizar_pedido.php';
+        break;
+    case 'home':
+    default:
+        $viewFile = VIEW_PATH . 'home.php';
         break;
 }
 
+// Limpa qualquer saída anterior antes de carregar a view final
+if (ob_get_length()) ob_clean();
+
+if (!file_exists($viewFile)) {
+    http_response_code(404);
+    echo "Erro: O arquivo '{$viewFile}' não foi encontrado na pasta view.";
+    exit;
+}
+
+require $viewFile;
+exit; // Força a parada do script aqui

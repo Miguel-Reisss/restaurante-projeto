@@ -12,6 +12,38 @@ class FuncionariosController
     {
         $this->funcionariosModel = new Funcionarios();
     }
+    public function login(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Método não permitido.';
+            return;
+        }
+
+        // Pega o que foi digitado na tela
+        $usuario = $_POST['usuario'] ?? '';
+        $senha = $_POST['senha'] ?? '';
+
+        // VERIFICAÇÃO FIXA: Usuário 'admin' e Senha '123456'
+        if ($usuario === 'admin' && $senha === '123456') {
+
+            // Cria a sessão de administrador
+            $_SESSION['usuario_id'] = 1;
+            $_SESSION['usuario_nome'] = 'Administrador';
+            $_SESSION['nivel_acesso'] = 'admin';
+
+            // Redireciona para o painel de pedidos
+            header('Location: /index.php?controller=pedido&action=index');
+            exit;
+        } else {
+            // Se errar a palavra admin ou a senha 123456, mostra o erro e volta
+            echo "<script>
+                    alert('Usuário ou senha incorretos!');
+                    window.location.href = 'index.php?page=login';
+                  </script>";
+            exit;
+        }
+    }
 
     public function index(): void
     {

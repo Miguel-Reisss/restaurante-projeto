@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sabor & Tempo</title>
+    <title>Início - Sabor & Tempo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        /* Variáveis do Tema */
         :root {
             --bg-color: #F8F9FA;
             --text-color: #2B2D42;
@@ -28,15 +27,15 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
+            font-family: sans-serif;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: sans-serif;
             transition: background-color 0.3s, color 0.3s;
             margin: 0;
             position: relative;
-            /* Necessário para o botão de tema flutuar */
+            /* Necessário para o botão de tema fixo no canto */
         }
 
         /* Botão de tema no canto da tela */
@@ -56,52 +55,61 @@
             transform: scale(1.1);
         }
 
-        .login-card {
+        /* Cartão Centralizado */
+        .home-card {
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             padding: 3rem 2.5rem;
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--border-color);
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        .login-card h2 {
+        /* Título dentro do cartão */
+        .home-card h2 {
             color: var(--header-text);
-            margin-bottom: 2rem;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
 
-        /* Ajuste dos inputs pro tema escuro */
-        .form-control,
-        .input-group-text {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-color: var(--border-color);
-        }
-
-        .form-control:focus {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-color: #F4A261;
-            box-shadow: none;
-        }
-
-        .btn-primary-custom {
-            background-color: #D32F2F;
-            border: none;
-            border-radius: 8px;
-            padding: 0.8rem;
-            font-weight: 500;
+        .btn-custom {
+            display: block;
             width: 100%;
-            color: #fff;
-            margin-top: 1rem;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 15px;
             transition: 0.3s;
         }
 
-        .btn-primary-custom:hover {
+        .btn-cliente {
+            background-color: #D32F2F;
+            color: white;
+            border: none;
+        }
+
+        .btn-cliente:hover {
             background-color: #b71c1c;
-            color: #fff;
+            color: white;
+        }
+
+        .btn-admin {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-admin:hover {
+            background-color: rgba(211, 47, 47, 0.1);
+            color: #D32F2F;
+            border-color: #D32F2F;
         }
     </style>
 </head>
@@ -110,35 +118,21 @@
 
     <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
 
-    <div class="login-card">
-        <h2 class="text-center">
-            <i class="ph ph-cooking-pot fs-1 d-block mb-2" style="color: #F4A261;"></i>
-            <b>SABOR</b> <span style="font-weight: 300;">& TEMPO</span>
+    <div class="home-card">
+        <h2>
+            <i class="ph ph-cooking-pot fs-1" style="color: #F4A261;"></i>
+            <div><b>SABOR</b> <span style="font-weight: 300;">& TEMPO</span></div>
         </h2>
 
-        <form action="index.php?controller=funcionarios&action=login" method="POST">
+        <p class="mb-4 opacity-75">Selecione como deseja acessar:</p>
 
-            <div class="mb-3">
-                <label for="usuario" class="form-label">Usuário</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="ph ph-user"></i></span>
-                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Digite seu usuário" required>
-                </div>
-            </div>
+        <a href="index.php?page=cardapio" class="btn-custom btn-cliente">
+            <i class="ph ph-book-open me-2"></i> Iniciar para Cliente
+        </a>
 
-            <div class="mb-3">
-                <label for="senha" class="form-label">Senha</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="ph ph-lock-key"></i></span>
-                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Sua senha" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary-custom d-flex align-items-center justify-content-center">
-                Entrar no Sistema <i class="ph ph-sign-in ms-2 fs-5"></i>
-            </button>
-            <a href="index.php?page=home" class="d-block text-center mt-3 text-muted text-decoration-none">← Voltar</a>
-        </form>
+        <a href="index.php?page=login" class="btn-custom btn-admin">
+            <i class="ph ph-lock-key me-2"></i> Área do Administrador
+        </a>
     </div>
 
     <script>
@@ -146,14 +140,12 @@
         const themeIcon = themeToggleBtn.querySelector('i');
         const htmlElement = document.documentElement;
 
-        // Puxa a preferência salva
         const currentTheme = localStorage.getItem('theme');
         if (currentTheme === 'dark') {
             htmlElement.setAttribute('data-theme', 'dark');
             themeIcon.classList.replace('ph-moon', 'ph-sun');
         }
 
-        // Evento de clique
         themeToggleBtn.addEventListener('click', () => {
             if (htmlElement.getAttribute('data-theme') === 'dark') {
                 htmlElement.removeAttribute('data-theme');
