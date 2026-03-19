@@ -1,113 +1,59 @@
 <?php
-
-declare(strict_types=1);
-
-require_once __DIR__ . '/../config/conexao.php';
+require_once 'config/conexao.php';
 
 class Pedido
 {
-    private PDO $conn;
+    private $conn;
 
     public function __construct()
     {
         $this->conn = Conexao::getConnection();
     }
 
-    public function criar(array $dados): int
+    public function criar($dados)
     {
-        $sql = 'INSERT INTO pedidos (mesa_id, tipo, status, total, observacoes, data_criacao)
-                VALUES (:mesa_id, :tipo, :status, :total, :observacoes, NOW())';
-
+        $sql = "INSERT INTO pedidos (mesa_id, tipo, status, total, observacoes) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':mesa_id', $dados['mesa_id'] ?? null, PDO::PARAM_INT);
-        $stmt->bindValue(':tipo', $dados['tipo'] ?? 'salao');
-        $stmt->bindValue(':status', $dados['status'] ?? 'aberto');
-        $stmt->bindValue(':total', $dados['total'] ?? 0);
-        $stmt->bindValue(':observacoes', $dados['observacoes'] ?? '');
-
-        $stmt->execute();
-
-        return (int) $this->conn->lastInsertId();
+        $stmt->execute([
+            $dados['mesa_id'],
+            $dados['tipo'],
+            $dados['status'],
+            $dados['total'],
+            $dados['observacoes']
+        ]);
+        return $this->conn->lastInsertId(); // Retorna o ID do pedido que acabou de ser criado!
     }
 
-    public function buscarPorId(int $id): ?array
+    // NOVA FUNÇÃO: Salva o pagamento na tabela separada
+    public function salvarPagamento($pedido_id, $metodo, $valor, $troco_para)
     {
-        $sql  = 'SELECT * FROM pedidos WHERE id = :id LIMIT 1';
+        $sql = "INSERT INTO pagamentos (pedido_id, metodo, valor, troco_para) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $pedido = $stmt->fetch();
-
-        return $pedido ?: null;
+        return $stmt->execute([$pedido_id, $metodo, $valor, $troco_para]);
     }
 
-    public function listar(?string $status = null, ?string $tipo = null): array
+    public function listarTodos()
     {
-        $sql    = 'SELECT * FROM pedidos WHERE 1=1';
-        $params = [];
-
-        if ($status !== null) {
-            $sql              .= ' AND status = :status';
-            $params['status'] = $status;
-        }
-
-        if ($tipo !== null) {
-            $sql            .= ' AND tipo = :tipo';
-            $params['tipo'] = $tipo;
-        }
-
-        $sql .= ' ORDER BY data_criacao DESC';
-
+        $sql = "SELECT * FROM pedidos ORDER BY id DESC";
         $stmt = $this->conn->prepare($sql);
-
-        foreach ($params as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
-        }
-
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
-    public function atualizar(int $id, array $dados): bool
+    public function atualizarStatus($id, $status)
     {
-        $sql = 'UPDATE pedidos
-                SET mesa_id = :mesa_id,
-                    tipo = :tipo,
-                    status = :status,
-                    total = :total,
-                    observacoes = :observacoes
-                WHERE id = :id';
-
+        $sql = "UPDATE pedidos SET status = ? WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':mesa_id', $dados['mesa_id'] ?? null, PDO::PARAM_INT);
-        $stmt->bindValue(':tipo', $dados['tipo'] ?? 'salao');
-        $stmt->bindValue(':status', $dados['status'] ?? 'aberto');
-        $stmt->bindValue(':total', $dados['total'] ?? 0);
-        $stmt->bindValue(':observacoes', $dados['observacoes'] ?? '');
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-        return $stmt->execute();
+        return $stmt->execute([$status, $id]);
     }
 
-    public function atualizarStatus(int $id, string $status): bool
+    // NOVA FUNÇÃO: Apaga todos os pedidos que já foram entregues
+    public function limparEntregues()
     {
-        $sql  = 'UPDATE pedidos SET status = :status WHERE id = :id';
+        // Como você colocou ON DELETE CASCADE na tabela de pagamentos, 
+        // os pagamentos destes pedidos também serão limpos automaticamente.
+        $sql = "DELETE FROM pedidos WHERE status = 'entregue'";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':status', $status);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-        return $stmt->execute();
-    }
-
-    public function deletar(int $id): bool
-    {
-        $sql  = 'DELETE FROM pedidos WHERE id = :id';
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
         return $stmt->execute();
     }
 }
-

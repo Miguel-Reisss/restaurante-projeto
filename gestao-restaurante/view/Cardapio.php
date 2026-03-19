@@ -22,19 +22,7 @@
             --text-muted-cor: #6c757d;
         }
 
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #f1f1f1;
-            --card-bg: #1e1e1e;
-            --header-bg: #1a1a1a;
-            --header-text: #D32F2F;
-            --border-color: #333333;
-            --btn-add-bg: #D32F2F;
-            --btn-add-hover: #b71c1c;
-            --offcanvas-bg: #1e1e1e;
-            --text-muted-cor: #adb5bd;
-        }
-
+       
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -229,7 +217,7 @@
     <div class="header mb-4">
         <a href="index.php?page=home" class="btn-voltar" title="Voltar ao Início"><i class="ph ph-arrow-left"></i></a>
         <img src="view/midia/logo.png" alt="Celestina Point" style="max-height: 45px; width: auto;">
-        <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
+       
     </div>
 
     <div class="container" style="max-width: 1200px;">
@@ -333,7 +321,7 @@
             </div>
         </div>
 
-        <h3 class="categoria-titulo">Bebidas & Sucos</h3>
+        <h3 class="categoria-titulo">Bebidas</h3>
         <div class="row g-4 justify-content-center">
 
             <div class="col-12 col-md-6 col-lg-4">
@@ -462,26 +450,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = themeToggleBtn.querySelector('i');
-        const htmlElement = document.documentElement;
-
-        if (localStorage.getItem('theme') === 'dark') {
-            htmlElement.setAttribute('data-theme', 'dark');
-            themeIcon.classList.replace('ph-moon', 'ph-sun');
-        }
-
-        themeToggleBtn.addEventListener('click', () => {
-            if (htmlElement.getAttribute('data-theme') === 'dark') {
-                htmlElement.removeAttribute('data-theme');
-                themeIcon.classList.replace('ph-sun', 'ph-moon');
-                localStorage.setItem('theme', 'light');
-            } else {
-                htmlElement.setAttribute('data-theme', 'dark');
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
+       
 
         let carrinho = JSON.parse(localStorage.getItem('carrinho_celestina')) || {};
         const offcanvas = new bootstrap.Offcanvas(document.getElementById('abaCarrinho'));

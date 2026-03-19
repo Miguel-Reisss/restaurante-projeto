@@ -24,17 +24,7 @@
         }
 
         /* Variáveis de Cores - Tema Escuro */
-        [data-theme="dark"] {
-            --bg-body: #121212;
-            --text-main: #f1f1f1;
-            --sidebar-bg: #1a1a1a;
-            --sidebar-text: #f1f1f1;
-            --sidebar-hover: #b71c1c;
-            --card-bg: #1e1e1e;
-            --border-color: #333333;
-            --table-header: #2c2c2c;
-            --obs-bg: #2a2a2a;
-        }
+        
 
         body {
             background-color: var(--bg-body);
@@ -188,7 +178,7 @@
                 <h2 class="fw-bold m-0">Gestão de Pedidos</h2>
 
                 <div class="d-flex gap-2">
-                    <button id="theme-toggle" class="btn btn-outline-secondary btn-theme" title="Trocar Tema">
+                   
                         <i class="ph ph-moon"></i>
                     </button>
 
@@ -269,29 +259,7 @@
         </div>
     </div>
 
-    <script>
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = themeToggleBtn.querySelector('i');
-        const htmlElement = document.documentElement;
-
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark') {
-            htmlElement.setAttribute('data-theme', 'dark');
-            themeIcon.classList.replace('ph-moon', 'ph-sun');
-        }
-
-        themeToggleBtn.addEventListener('click', () => {
-            if (htmlElement.getAttribute('data-theme') === 'dark') {
-                htmlElement.removeAttribute('data-theme');
-                themeIcon.classList.replace('ph-sun', 'ph-moon');
-                localStorage.setItem('theme', 'light');
-            } else {
-                htmlElement.setAttribute('data-theme', 'dark');
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
-    </script>
+    
 </body>
 
 </html>

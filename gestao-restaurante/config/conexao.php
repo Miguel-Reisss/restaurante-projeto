@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 class Conexao
 {
-    private const DB_HOST = '10.91.45.61';
-    private const DB_NAME = 'gestao-restaurante';
-    private const DB_USER = 'admin';
-    private const DB_PASS = '123456';
-    private const DB_CHARSET = 'utf8mb4';
-    
+   
+    private static $host = "10.91.45.61";
+    private static $usuario = "admin";
+    private static $senha = "123456";
 
-    /**
-     * Retorna uma instância única de PDO (Singleton simples).
-     *
-     * @throws Exception Se não for possível conectar ao banco.
-     */
+    // O nome EXATO como está na sua base de dados agora (sem espaços à volta!)
+    private static $banco = "gestao_restaurante";
+
+    private static $charset = "utf8mb4";
+
     public static function getConnection(): PDO
     {
         static $pdo = null;
@@ -26,9 +24,9 @@ class Conexao
 
         $dsn = sprintf(
             'mysql:host=%s;dbname=%s;charset=%s',
-            self::DB_HOST,
-            self::DB_NAME,
-            self::DB_CHARSET
+            self::$host,
+            self::$banco,
+            self::$charset
         );
 
         $options = [
@@ -38,14 +36,11 @@ class Conexao
         ];
 
         try {
-            $pdo = new PDO($dsn, self::DB_USER, self::DB_PASS, $options);
+            $pdo = new PDO($dsn, self::$usuario, self::$senha, $options);
         } catch (PDOException $e) {
-            // Loga o erro técnico e lança exceção genérica para o usuário final.
-            error_log('[DB ERROR] ' . $e->getMessage());
-            throw new Exception('Erro ao conectar ao banco de dados. Tente novamente mais tarde.');
+            die('Erro fatal de Conexão: ' . $e->getMessage());
         }
 
         return $pdo;
     }
 }
-

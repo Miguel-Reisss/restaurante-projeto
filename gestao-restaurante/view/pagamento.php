@@ -21,18 +21,7 @@
             --active-bg: rgba(211, 47, 47, 0.05);
         }
 
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #f1f1f1;
-            --card-bg: #1e1e1e;
-            --header-bg: #1a1a1a;
-            --header-text: #D32F2F;
-            --border-color: #333333;
-            --text-muted: #adb5bd;
-            --active-border: #D32F2F;
-            --active-bg: rgba(211, 47, 47, 0.15);
-        }
-
+        
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -152,7 +141,7 @@
     <div class="header mb-4">
         <a href="index.php?page=finalizar" class="btn-voltar" title="Voltar"><i class="ph ph-arrow-left"></i></a>
         <img src="view/midia/logo.png" alt="Celestina Point" style="max-height: 45px; width: auto;">
-        <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
+        
     </div>
 
     <div class="container" style="max-width: 600px;">
@@ -240,27 +229,7 @@
     </div>
 
     <script>
-        // 1. TEMA
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = themeToggleBtn.querySelector('i');
-        const htmlElement = document.documentElement;
 
-        if (localStorage.getItem('theme') === 'dark') {
-            htmlElement.setAttribute('data-theme', 'dark');
-            themeIcon.classList.replace('ph-moon', 'ph-sun');
-        }
-
-        themeToggleBtn.addEventListener('click', () => {
-            if (htmlElement.getAttribute('data-theme') === 'dark') {
-                htmlElement.removeAttribute('data-theme');
-                themeIcon.classList.replace('ph-sun', 'ph-moon');
-                localStorage.setItem('theme', 'light');
-            } else {
-                htmlElement.setAttribute('data-theme', 'dark');
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
 
         // 2. RECUPERA OS DADOS DA TELA ANTERIOR
         // Vamos pegar o carrinho pra calcular o total exato

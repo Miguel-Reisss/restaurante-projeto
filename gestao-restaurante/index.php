@@ -83,6 +83,10 @@ switch ($page) {
         case 'pagamento':
             $viewFile = VIEW_PATH . 'pagamento.php';
             break;
+            case 'sucesso':
+                $viewFile = VIEW_PATH . 'sucesso.php';
+                break;
+                
             
 }
 

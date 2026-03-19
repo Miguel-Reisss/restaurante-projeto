@@ -33,7 +33,7 @@ class FuncionariosController
             $_SESSION['nivel_acesso'] = 'admin';
 
             // Redireciona para o painel de pedidos
-            header('Location: /index.php?controller=pedido&action=index');
+            header('Location: index.php?controller=pedido&action=index');
             exit;
         } else {
             // Se errar a palavra admin ou a senha 123456, mostra o erro e volta

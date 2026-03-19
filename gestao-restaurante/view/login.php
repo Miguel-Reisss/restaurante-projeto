@@ -17,13 +17,6 @@
             --header-text: #D32F2F;
         }
 
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #f1f1f1;
-            --card-bg: #1e1e1e;
-            --border-color: #333333;
-            --header-text: #D32F2F;
-        }
 
         body {
             background-color: var(--bg-color);
@@ -104,7 +97,7 @@
 
 <body>
 
-    <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
+   
 
     <div class="login-card">
 
@@ -137,31 +130,7 @@
         </form>
     </div>
 
-    <script>
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = themeToggleBtn.querySelector('i');
-        const htmlElement = document.documentElement;
-
-        // Puxa a preferência salva
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark') {
-            htmlElement.setAttribute('data-theme', 'dark');
-            themeIcon.classList.replace('ph-moon', 'ph-sun');
-        }
-
-        // Evento de clique
-        themeToggleBtn.addEventListener('click', () => {
-            if (htmlElement.getAttribute('data-theme') === 'dark') {
-                htmlElement.removeAttribute('data-theme');
-                themeIcon.classList.replace('ph-sun', 'ph-moon');
-                localStorage.setItem('theme', 'light');
-            } else {
-                htmlElement.setAttribute('data-theme', 'dark');
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
-    </script>
+   
 </body>
 
 </html>
