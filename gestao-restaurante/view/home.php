@@ -119,10 +119,9 @@
     <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
 
     <div class="home-card">
-        <h2>
-            <i class="ph ph-cooking-pot fs-1" style="color: #F4A261;"></i>
-            <div><b>SABOR</b> <span style="font-weight: 300;">& TEMPO</span></div>
-        </h2>
+        <div class="text-center mb-4">
+            <img src="view/midia/logo.png" alt="Celestina Point" style="max-width: 200px; height: auto;">
+        </div>
 
         <p class="mb-4 opacity-75">Selecione como deseja acessar:</p>
 

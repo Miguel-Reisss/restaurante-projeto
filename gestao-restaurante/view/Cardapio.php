@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio - Sabor & Tempo</title>
+    <title>Cardápio - Celestina Point</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
@@ -18,6 +18,8 @@
             --border-color: #dee2e6;
             --btn-add-bg: #F4A261;
             --btn-add-hover: #e09150;
+            --offcanvas-bg: #ffffff;
+            --text-muted-cor: #6c757d;
         }
 
         [data-theme="dark"] {
@@ -29,36 +31,29 @@
             --border-color: #333333;
             --btn-add-bg: #D32F2F;
             --btn-add-hover: #b71c1c;
+            --offcanvas-bg: #1e1e1e;
+            --text-muted-cor: #adb5bd;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: sans-serif;
-            padding-bottom: 100px;
+            padding-bottom: 110px;
             transition: background-color 0.3s, color 0.3s;
             margin: 0;
         }
 
-        /* Cabeçalho */
         .header {
             background-color: var(--header-bg);
             color: var(--header-text);
-            padding: 20px;
+            padding: 15px 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             transition: background-color 0.3s;
-        }
-
-        .header h2 {
-            margin: 0;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .btn-voltar,
@@ -93,29 +88,29 @@
         }
 
         .form-control,
-        .input-group-text {
+        .input-group-text,
+        .form-select {
             background-color: var(--card-bg);
             color: var(--text-color);
             border-color: var(--border-color);
         }
 
-        .form-control:focus {
+        .form-control:focus,
+        .form-select:focus {
             background-color: var(--card-bg);
             color: var(--text-color);
             box-shadow: none;
             border-color: var(--btn-add-bg);
         }
 
-        /* Categorias e Imagens */
         .categoria-titulo {
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             margin-bottom: 1.5rem;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
             font-weight: 600;
         }
 
-        /* Estilo para a imagem do produto */
         .produto-img {
             width: 100%;
             height: 180px;
@@ -134,7 +129,6 @@
             flex-direction: column;
             border: 1px solid var(--border-color);
             padding: 15px;
-            /* Reduzi o padding interno para acomodar a imagem melhor */
         }
 
         .produto-card:hover {
@@ -146,30 +140,86 @@
             color: #D32F2F;
             font-weight: bold;
             font-size: 1.3rem;
-            margin-top: auto;
+            margin-top: 5px;
         }
 
-        .btn-add {
-            background-color: var(--btn-add-bg);
-            border: none;
-            color: white;
-            font-weight: bold;
-            width: 100%;
+        .controle-qtd {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 12px;
+            padding: 5px;
             margin-top: 15px;
-            transition: all 0.3s;
         }
 
-        .btn-add:hover {
-            background-color: var(--btn-add-hover);
+        .btn-qtd {
+            background-color: var(--btn-add-bg);
             color: white;
+            border: none;
+            border-radius: 6px;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+
+        .btn-qtd:hover {
+            background-color: var(--btn-add-hover);
+        }
+
+        .btn-qtd.minus {
+            background-color: #6c757d;
+        }
+
+        .btn-qtd.minus:hover {
+            background-color: #5a6268;
+        }
+
+        .qtd-numero {
+            font-weight: bold;
+            font-size: 1.2rem;
+            width: 40px;
+            text-align: center;
         }
 
         .carrinho-bar {
             background-color: var(--card-bg);
             border-top: 1px solid var(--border-color);
             z-index: 1000;
+        }
+
+        .offcanvas {
+            background-color: var(--offcanvas-bg);
+            color: var(--text-color);
+        }
+
+        .offcanvas-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .item-lateral {
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .item-lateral:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        [data-theme="dark"] .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        .texto-legivel {
+            color: var(--text-muted-cor) !important;
         }
     </style>
 </head>
@@ -178,7 +228,7 @@
 
     <div class="header mb-4">
         <a href="index.php?page=home" class="btn-voltar" title="Voltar ao Início"><i class="ph ph-arrow-left"></i></a>
-        <h2><i class="ph ph-cooking-pot" style="color: #F4A261;"></i> <b>SABOR</b> <span style="font-weight: 300;">& TEMPO</span></h2>
+        <img src="view/midia/logo.png" alt="Celestina Point" style="max-height: 45px; width: auto;">
         <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
     </div>
 
@@ -192,44 +242,175 @@
             </div>
         </div>
 
-        <h3 class="categoria-titulo">🍔 Lanches & Porções</h3>
+        <h3 class="categoria-titulo">Lanches Especiais</h3>
         <div class="row g-4 justify-content-center">
-
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="produto-card">
-                    <img src="https://via.placeholder.com/400x200?text=Foto+Hamburguer" alt="Hambúrguer Artesanal" class="produto-img">
-
+                    <img src="view/midia/artesanal.png" class="produto-img">
                     <h5 class="fw-bold fs-5">Hambúrguer Artesanal</h5>
-                    <p class="opacity-75 small mt-1 mb-3">Pão brioche, blend 180g, queijo cheddar, bacon crocante e maionese da casa.</p>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Pão brioche, blend 180g, queijo cheddar, bacon crocante e maionese da casa.</p>
                     <div class="preco">R$ 35,90</div>
-                    <button class="btn btn-add btn-adicionar" data-preco="35.90"><i class="ph ph-plus-circle me-1"></i> Adicionar</button>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus" data-nome="Hambúrguer Artesanal">-</button>
+                        <span class="qtd-numero" data-nome="Hambúrguer Artesanal">0</span>
+                        <button class="btn-qtd plus" data-nome="Hambúrguer Artesanal" data-preco="35.90">+</button>
+                    </div>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="produto-card">
-                    <img src="https://via.placeholder.com/400x200?text=Foto+Batata" alt="Porção de Fritas" class="produto-img">
-
-                    <h5 class="fw-bold fs-5">Porção de Fritas</h5>
-                    <p class="opacity-75 small mt-1 mb-3">Batatas rústicas fritas na hora acompanhadas de molho de alho.</p>
-                    <div class="preco">R$ 22,50</div>
-                    <button class="btn btn-add btn-adicionar" data-preco="22.50"><i class="ph ph-plus-circle me-1"></i> Adicionar</button>
+                    <img src="view/midia/smash.png" class="produto-img">
+                    <h5 class="fw-bold fs-5">Smash Burger Duplo</h5>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Pão australiano, 2 blends smash 90g, dobro de cheddar e cebola caramelizada.</p>
+                    <div class="preco">R$ 32,50</div>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus" data-nome="Smash Burger Duplo">-</button>
+                        <span class="qtd-numero" data-nome="Smash Burger Duplo">0</span>
+                        <button class="btn-qtd plus" data-nome="Smash Burger Duplo" data-preco="32.50">+</button>
+                    </div>
                 </div>
             </div>
 
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="produto-card">
+                    <img src="view/midia/chicken.png" class="produto-img">
+                    <h5 class="fw-bold fs-5">Chicken Crispy</h5>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Pão tradicional, filé de frango empanado crocante, alface e maionese verde.</p>
+                    <div class="preco">R$ 28,90</div>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus" data-nome="Chicken Crispy">-</button>
+                        <span class="qtd-numero" data-nome="Chicken Crispy">0</span>
+                        <button class="btn-qtd plus" data-nome="Chicken Crispy" data-preco="28.90">+</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <h3 class="categoria-titulo">🥤 Bebidas</h3>
+        <h3 class="categoria-titulo">Porções</h3>
         <div class="row g-4 justify-content-center">
 
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="produto-card">
-                    <img src="https://via.placeholder.com/400x200?text=Foto+Refrigerante" alt="Refrigerante Lata" class="produto-img">
+                <div class="produto-card dinâmico" data-nome-base="Batata Frita Tradicional">
+                    <img src="view/midia/batata.png" class="produto-img">
+                    <h5 class="fw-bold fs-5">Batata Frita Tradicional</h5>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Porção de batatas palito sequinhas e crocantes.</p>
 
-                    <h5 class="fw-bold fs-5">Refrigerante Lata</h5>
-                    <p class="opacity-75 small mt-1 mb-3">Coca-Cola, Guaraná ou Sprite (350ml).</p>
+                    <select class="form-select form-select-sm mb-2 select-tamanho">
+                        <option value="P" data-preco="15.00">Tamanho P</option>
+                        <option value="M" data-preco="22.50" selected>Tamanho M</option>
+                        <option value="G" data-preco="30.00">Tamanho G</option>
+                    </select>
+
+                    <div class="preco">R$ 22,50</div>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus">-</button>
+                        <span class="qtd-numero">0</span>
+                        <button class="btn-qtd plus">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="produto-card dinâmico" data-nome-base="Fritas Cheddar & Bacon">
+                    <img src="view/midia/batata_cheddar.png" class="produto-img">
+                    <h5 class="fw-bold fs-5">Fritas Cheddar & Bacon</h5>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Coberta com muito creme de cheddar e cubos de bacon.</p>
+
+                    <select class="form-select form-select-sm mb-2 select-tamanho">
+                        <option value="P" data-preco="25.00">Tamanho P</option>
+                        <option value="M" data-preco="34.90" selected>Tamanho M</option>
+                        <option value="G" data-preco="45.00">Tamanho G</option>
+                    </select>
+
+                    <div class="preco">R$ 34,90</div>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus">-</button>
+                        <span class="qtd-numero">0</span>
+                        <button class="btn-qtd plus">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="categoria-titulo">Bebidas & Sucos</h3>
+        <div class="row g-4 justify-content-center">
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="produto-card dinâmico" data-nome-base="Coca-Cola">
+                    <img src="view/midia/coca.png" class="produto-img" alt="Coca-Cola">
+                    <h5 class="fw-bold fs-5">Coca-Cola</h5>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Escolha a versão e o tamanho.</p>
+
+                    <select class="form-select form-select-sm mb-2 select-sabor">
+                        <option value="Original" selected>Original</option>
+                        <option value="Zero">Zero</option>
+                    </select>
+
+                    <select class="form-select form-select-sm mb-2 select-tamanho">
+                        <option value="Lata" data-preco="7.00" selected>Lata (350ml)</option>
+                        <option value="600ml" data-preco="10.00">Garrafa (600ml)</option>
+                        <option value="2 Litros" data-preco="16.00">Garrafa (2 Litros)</option>
+                    </select>
+
                     <div class="preco">R$ 7,00</div>
-                    <button class="btn btn-add btn-adicionar" data-preco="7.00"><i class="ph ph-plus-circle me-1"></i> Adicionar</button>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus">-</button>
+                        <span class="qtd-numero">0</span>
+                        <button class="btn-qtd plus">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="produto-card dinâmico" data-nome-base="Suco">
+                    <img src="view/midia/suco.png" class="produto-img" alt="Sucos Naturais">
+                    <h5 class="fw-bold fs-5">Sucos Naturais</h5>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Sucos feitos na hora, 100% da fruta.</p>
+
+                    <select class="form-select form-select-sm mb-2 select-sabor">
+                        <option value="de Laranja" selected>Laranja</option>
+                        <option value="de Limão">Limão</option>
+                        <option value="de Maracujá">Maracujá</option>
+                    </select>
+
+                    <select class="form-select form-select-sm mb-2 select-tamanho">
+                        <option value="P" data-preco="8.00">Copo P (300ml)</option>
+                        <option value="M" data-preco="12.00" selected>Copo M (500ml)</option>
+                        <option value="G" data-preco="20.00">Jarra G (1 Litro)</option>
+                    </select>
+
+                    <div class="preco">R$ 12,00</div>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus">-</button>
+                        <span class="qtd-numero">0</span>
+                        <button class="btn-qtd plus">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="produto-card dinâmico" data-nome-base="Água Mineral">
+                    <img src="view/midia/agua.png" class="produto-img" alt="Água Mineral">
+                    <h5 class="fw-bold fs-5">Água Mineral</h5>
+                    <p class="texto-legivel small mt-1 mb-2 flex-grow-1">Garrafinha bem gelada.</p>
+
+                    <select class="form-select form-select-sm mb-2 select-sabor">
+                        <option value="Sem Gás" selected>Sem Gás</option>
+                        <option value="Com Gás">Com Gás</option>
+                    </select>
+
+                    <select class="form-select form-select-sm mb-2 select-tamanho">
+                        <option value="500ml" data-preco="5.00" selected>Garrafa (500ml)</option>
+                        <option value="1.5L" data-preco="9.00">Garrafa (1.5 Litros)</option>
+                    </select>
+
+                    <div class="preco">R$ 5,00</div>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd minus">-</button>
+                        <span class="qtd-numero">0</span>
+                        <button class="btn-qtd plus">+</button>
+                    </div>
                 </div>
             </div>
 
@@ -240,23 +421,52 @@
     <div class="fixed-bottom p-3 shadow-lg d-flex justify-content-between align-items-center carrinho-bar">
         <div class="container d-flex justify-content-between align-items-center">
             <div>
-                <span class="opacity-75">Total do Pedido:</span>
+                <span class="opacity-75 d-block" style="font-size: 0.9rem;">
+                    <i class="ph ph-shopping-cart"></i> <span id="qtd-total-itens">0</span> itens selecionados
+                </span>
                 <h3 id="valor-total" class="mb-0 fw-bold" style="color: #28a745 !important;">R$ 0,00</h3>
             </div>
-            <button class="btn btn-lg" style="background-color: #D32F2F; color: white; border-radius: 8px; font-weight: bold;">
-                Finalizar Pedido <i class="ph ph-arrow-right ms-2"></i>
+            <button id="btn-abrir-lateral" class="btn btn-lg" style="background-color: #D32F2F; color: white; border-radius: 8px; font-weight: bold;">
+                Ver Pedido <i class="ph ph-list-bullets ms-2"></i>
             </button>
         </div>
     </div>
 
+    <div class="offcanvas offcanvas-end shadow-lg" tabindex="-1" id="abaCarrinho" aria-labelledby="abaCarrinhoLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title fw-bold" id="abaCarrinhoLabel">
+                <i class="ph ph-shopping-bag me-2" style="color: #F4A261;"></i> Seu Pedido
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+        </div>
+
+        <div class="offcanvas-body d-flex flex-column">
+            <div id="itens-carrinho-lateral" class="flex-grow-1 overflow-auto pe-2">
+                <p class="texto-legivel mt-3 text-center">Seu carrinho está vazio.</p>
+            </div>
+
+            <div class="mt-auto border-top pt-3" style="border-color: var(--border-color) !important;">
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="fw-bold fs-5">Total a pagar:</span>
+                    <span class="fw-bold fs-5 text-success" id="total-lateral">R$ 0,00</span>
+                </div>
+
+                <p class="texto-legivel small text-center mb-3">Revise seu pedido. Você poderá adicionar a mesa na próxima tela.</p>
+
+                <button id="btn-confirmar-final" class="btn btn-lg w-100" style="background-color: #28a745; color: white; border-radius: 8px; font-weight: bold;">
+                    Confirmar e Avançar <i class="ph ph-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 1. LÓGICA DO TEMA CLARO/ESCURO
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = themeToggleBtn.querySelector('i');
         const htmlElement = document.documentElement;
 
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark') {
+        if (localStorage.getItem('theme') === 'dark') {
             htmlElement.setAttribute('data-theme', 'dark');
             themeIcon.classList.replace('ph-moon', 'ph-sun');
         }
@@ -273,62 +483,175 @@
             }
         });
 
-        // 2. LÓGICA DO CARRINHO DE COMPRAS
-        // Inicia o carrinho buscando do localStorage (caso o cliente tenha voltado a página)
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        let totalCarrinho = 0;
+        let carrinho = JSON.parse(localStorage.getItem('carrinho_celestina')) || {};
+        const offcanvas = new bootstrap.Offcanvas(document.getElementById('abaCarrinho'));
 
-        const totalElement = document.getElementById('valor-total');
-        const botoesAdicionar = document.querySelectorAll('.btn-adicionar');
+        // FUNÇÃO INTELIGENTE: Pega o Sabor e o Tamanho para criar o nome final do produto
+        function atualizarCardDinamico(card) {
+            const selectTamanho = card.querySelector('.select-tamanho');
+            if (!selectTamanho) return;
 
-        // Função para recalcular e mostrar o total na tela
-        function atualizarTelaTotal() {
-            totalCarrinho = carrinho.reduce((soma, item) => soma + item.preco, 0);
-            totalElement.innerText = totalCarrinho.toLocaleString('pt-BR', {
+            const optionTamanho = selectTamanho.options[selectTamanho.selectedIndex];
+            const tamanho = optionTamanho.value;
+            const preco = parseFloat(optionTamanho.getAttribute('data-preco'));
+            const nomeBase = card.getAttribute('data-nome-base');
+
+            let nomeCompleto = `${nomeBase} (${tamanho})`;
+
+            // Verifica se tem select de sabor
+            const selectSabor = card.querySelector('.select-sabor');
+            if (selectSabor) {
+                const sabor = selectSabor.options[selectSabor.selectedIndex].value;
+                nomeCompleto = `${nomeBase} ${sabor} (${tamanho})`;
+            }
+
+            card.querySelector('.preco').innerText = preco.toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
             });
+
+            const btnPlus = card.querySelector('.btn-qtd.plus');
+            const btnMinus = card.querySelector('.btn-qtd.minus');
+            const spanQtd = card.querySelector('.qtd-numero');
+
+            btnPlus.setAttribute('data-nome', nomeCompleto);
+            btnPlus.setAttribute('data-preco', preco);
+            btnMinus.setAttribute('data-nome', nomeCompleto);
+            spanQtd.setAttribute('data-nome', nomeCompleto);
+
+            const qtdNoCarrinho = carrinho[nomeCompleto] ? carrinho[nomeCompleto].qtd : 0;
+            spanQtd.innerText = qtdNoCarrinho;
         }
 
-        // Atualiza a tela logo que a página carrega
-        atualizarTelaTotal();
-
-        // Clique no botão de adicionar
-        botoesAdicionar.forEach(botao => {
-            botao.addEventListener('click', function() {
-                // Pega os dados do produto (O h5 fica dentro do mesmo produto-card do botão)
-                const card = this.closest('.produto-card');
-                const nomeProduto = card.querySelector('h5').innerText;
-                const precoProduto = parseFloat(this.getAttribute('data-preco'));
-
-                // Adiciona no array e salva no navegador
-                carrinho.push({
-                    nome: nomeProduto,
-                    preco: precoProduto
-                });
-                localStorage.setItem('carrinho', JSON.stringify(carrinho));
-
-                // Atualiza o valor lá embaixo
-                atualizarTelaTotal();
-
-                // Efeito visual bonitinho
-                const textoOriginal = this.innerHTML;
-                this.innerHTML = '<i class="ph ph-check-circle me-1"></i> Adicionado';
-                this.style.backgroundColor = '#28a745';
-
-                setTimeout(() => {
-                    this.innerHTML = textoOriginal;
-                    this.style.backgroundColor = '';
-                }, 1000);
+        // Detecta mudança nos selects de Tamanho OU Sabor
+        document.querySelectorAll('.select-tamanho, .select-sabor').forEach(select => {
+            select.addEventListener('change', function() {
+                atualizarCardDinamico(this.closest('.produto-card'));
             });
         });
 
-        // 3. BOTÃO DE IR PARA A FINALIZAÇÃO
-        // Adicione um id="btn-ir-finalizar" no seu botão vermelho lá no HTML do cardápio!
-        document.querySelector('.carrinho-bar .btn-lg').addEventListener('click', () => {
-            if (carrinho.length === 0) {
-                alert("Selecione pelo menos um item para continuar.");
+        function atualizarTelaTotal() {
+            let total = 0;
+            let totalItens = 0;
+
+            document.querySelectorAll('.qtd-numero').forEach(span => {
+                const nome = span.getAttribute('data-nome');
+                const qtd = carrinho[nome] ? carrinho[nome].qtd : 0;
+                span.innerText = qtd;
+            });
+
+            for (let nome in carrinho) {
+                total += carrinho[nome].preco * carrinho[nome].qtd;
+                totalItens += carrinho[nome].qtd;
+            }
+
+            document.getElementById('valor-total').innerText = total.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+            document.getElementById('qtd-total-itens').innerText = totalItens;
+
+            localStorage.setItem('carrinho_celestina', JSON.stringify(carrinho));
+        }
+
+        function renderizarAbaLateral() {
+            const container = document.getElementById('itens-carrinho-lateral');
+            container.innerHTML = '';
+            let total = 0;
+
+            for (let nome in carrinho) {
+                const item = carrinho[nome];
+                total += item.preco * item.qtd;
+
+                container.innerHTML += `
+                    <div class="item-lateral">
+                        <div class="d-flex justify-content-between fw-bold mb-1">
+                            <span style="max-width: 70%;">${nome}</span>
+                            <span>R$ ${(item.preco * item.qtd).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="texto-legivel small">R$ ${item.preco.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (cada)</span>
+                            <div class="controle-qtd" style="margin-top: 0; padding: 2px;">
+                                <button class="btn-qtd minus btn-lateral-menos" data-nome="${nome}" style="width: 25px; height: 25px;">-</button>
+                                <span class="qtd-numero" style="width: 30px; font-size: 1rem;">${item.qtd}</span>
+                                <button class="btn-qtd plus btn-lateral-mais" data-nome="${nome}" style="width: 25px; height: 25px;">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (Object.keys(carrinho).length === 0) {
+                container.innerHTML = '<p class="texto-legivel mt-3 text-center">Seu carrinho está vazio.</p>';
+            }
+
+            document.getElementById('total-lateral').innerText = total.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+
+            document.querySelectorAll('.btn-lateral-mais').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    carrinho[this.getAttribute('data-nome')].qtd++;
+                    atualizarTudo();
+                });
+            });
+
+            document.querySelectorAll('.btn-lateral-menos').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const nome = this.getAttribute('data-nome');
+                    carrinho[nome].qtd--;
+                    if (carrinho[nome].qtd <= 0) delete carrinho[nome];
+
+                    atualizarTudo();
+                    if (Object.keys(carrinho).length === 0) offcanvas.hide();
+                });
+            });
+        }
+
+        function atualizarTudo() {
+            document.querySelectorAll('.produto-card.dinâmico').forEach(card => atualizarCardDinamico(card));
+            atualizarTelaTotal();
+            renderizarAbaLateral();
+        }
+
+        atualizarTudo();
+
+        document.querySelectorAll('.produto-card .btn-qtd.plus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const nome = this.getAttribute('data-nome');
+                const preco = parseFloat(this.getAttribute('data-preco'));
+                if (!carrinho[nome]) carrinho[nome] = {
+                    preco: preco,
+                    qtd: 0
+                };
+                carrinho[nome].qtd++;
+                atualizarTudo();
+            });
+        });
+
+        document.querySelectorAll('.produto-card .btn-qtd.minus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const nome = this.getAttribute('data-nome');
+                if (carrinho[nome] && carrinho[nome].qtd > 0) {
+                    carrinho[nome].qtd--;
+                    if (carrinho[nome].qtd === 0) delete carrinho[nome];
+                }
+                atualizarTudo();
+            });
+        });
+
+        document.getElementById('btn-abrir-lateral').addEventListener('click', () => {
+            if (Object.keys(carrinho).length === 0) {
+                alert("Adicione pelo menos um item primeiro!");
             } else {
+                renderizarAbaLateral();
+                offcanvas.show();
+            }
+        });
+
+        document.getElementById('btn-confirmar-final').addEventListener('click', () => {
+            if (Object.keys(carrinho).length > 0) {
                 window.location.href = 'index.php?page=finalizar';
             }
         });

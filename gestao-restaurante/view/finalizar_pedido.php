@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finalizar Pedido - Sabor & Tempo</title>
+    <title>Finalizar Pedido - Celestina Point</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
@@ -16,6 +16,7 @@
             --header-bg: #D32F2F;
             --header-text: #ffffff;
             --border-color: #dee2e6;
+            --text-muted: #6c757d;
         }
 
         [data-theme="dark"] {
@@ -25,6 +26,8 @@
             --header-bg: #1a1a1a;
             --header-text: #D32F2F;
             --border-color: #333333;
+            --text-muted: #adb5bd;
+            /* Cor mais clara para o texto "Revise seu pedido" ficar legível no escuro */
         }
 
         body {
@@ -39,20 +42,12 @@
         .header {
             background-color: var(--header-bg);
             color: var(--header-text);
-            padding: 20px;
+            padding: 15px 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-        }
-
-        .header h2 {
-            margin: 0;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .btn-voltar {
@@ -89,7 +84,8 @@
         .item-carrinho {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            align-items: center;
+            padding: 12px 0;
             border-bottom: 1px dashed var(--border-color);
         }
 
@@ -115,6 +111,10 @@
             border-top: 1px solid var(--border-color);
             z-index: 1000;
         }
+
+        .text-muted-custom {
+            color: var(--text-muted) !important;
+        }
     </style>
 </head>
 
@@ -122,7 +122,9 @@
 
     <div class="header mb-4">
         <a href="index.php?page=cardapio" class="btn-voltar" title="Voltar ao Cardápio"><i class="ph ph-arrow-left"></i></a>
-        <h2><i class="ph ph-cooking-pot" style="color: #F4A261;"></i> <b>SABOR</b> <span style="font-weight: 300;">& TEMPO</span></h2>
+
+        <img src="view/midia/logo.png" alt="Celestina Point" style="max-height: 45px; width: auto;">
+
         <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
     </div>
 
@@ -130,20 +132,21 @@
         <h3 class="mb-4 fw-bold">Resumo do Pedido</h3>
 
         <div class="resumo-card">
-            <h5 class="fw-bold mb-3"><i class="ph ph-shopping-bag me-2"></i>Itens Selecionados</h5>
+            <h5 class="fw-bold mb-3"><i class="ph ph-shopping-bag me-2" style="color: #F4A261;"></i> Itens Selecionados</h5>
             <div id="lista-itens">
-                <p class="text-muted">Carregando itens...</p>
+                <p class="text-muted-custom text-center py-3">Carregando itens...</p>
             </div>
+
             <div class="d-flex justify-content-between mt-3 pt-3" style="border-top: 2px solid var(--border-color);">
                 <h4 class="fw-bold">Total:</h4>
-                <h4 class="fw-bold text-success" id="total-tela">R$ 0,00</h4>
+                <h4 class="fw-bold text-success" id="total-tela" style="color: #28a745 !important;">R$ 0,00</h4>
             </div>
         </div>
 
         <form id="form-pedido" action="index.php?controller=pedido&action=store" method="POST">
 
             <div class="resumo-card">
-                <h5 class="fw-bold mb-3"><i class="ph ph-armchair me-2"></i>Informações da Mesa</h5>
+                <h5 class="fw-bold mb-3"><i class="ph ph-armchair me-2" style="color: #F4A261;"></i> Informações da Mesa</h5>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Número da Mesa *</label>
@@ -161,9 +164,10 @@
             <input type="hidden" name="total" id="input-total" value="0">
             <input type="hidden" name="observacoes" id="input-observacoes" value="">
 
-            <div class="fixed-bottom p-3 shadow-lg d-flex justify-content-between align-items-center carrinho-bar">
-                <div class="container d-flex justify-content-end">
-                    <button type="submit" class="btn btn-lg w-100" style="background-color: #D32F2F; color: white; border-radius: 8px; font-weight: bold; max-width: 800px;">
+            <div class="fixed-bottom p-3 shadow-lg d-flex justify-content-center align-items-center carrinho-bar">
+                <div class="container" style="max-width: 800px; padding: 0;">
+                    <p class="text-muted-custom small text-center mb-2">Revise seu pedido antes de enviar para a cozinha.</p>
+                    <button type="submit" class="btn btn-lg w-100" style="background-color: #D32F2F; color: white; border-radius: 8px; font-weight: bold;">
                         Enviar Pedido para Cozinha <i class="ph ph-paper-plane-tilt ms-2"></i>
                     </button>
                 </div>
@@ -176,10 +180,12 @@
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = themeToggleBtn.querySelector('i');
         const htmlElement = document.documentElement;
+
         if (localStorage.getItem('theme') === 'dark') {
             htmlElement.setAttribute('data-theme', 'dark');
             themeIcon.classList.replace('ph-moon', 'ph-sun');
         }
+
         themeToggleBtn.addEventListener('click', () => {
             if (htmlElement.getAttribute('data-theme') === 'dark') {
                 htmlElement.removeAttribute('data-theme');
@@ -192,7 +198,7 @@
             }
         });
 
-        // 2. RECUPERAR CARRINHO
+        // 2. LER O CARRINHO NO NOVO FORMATO (OBJETO)
         const listaItensDiv = document.getElementById('lista-itens');
         const totalTela = document.getElementById('total-tela');
         const inputTotal = document.getElementById('input-total');
@@ -200,30 +206,40 @@
         const obsCliente = document.getElementById('obs-cliente');
         const inputObservacoes = document.getElementById('input-observacoes');
 
-        // Pega os itens salvos ou cria array vazio
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        // Pega o objeto salvo no localStorage
+        let carrinho = JSON.parse(localStorage.getItem('carrinho_celestina')) || {};
         let total = 0;
         let resumoTexto = "Itens do Pedido:\n";
 
-        if (carrinho.length === 0) {
-            listaItensDiv.innerHTML = '<p class="text-danger">Seu carrinho está vazio!</p>';
+        // Verifica se o objeto está vazio
+        if (Object.keys(carrinho).length === 0) {
+            listaItensDiv.innerHTML = '<p class="text-danger text-center py-3">Seu carrinho está vazio! Volte ao cardápio para adicionar itens.</p>';
         } else {
-            listaItensDiv.innerHTML = ''; // Limpa o "Carregando"
+            listaItensDiv.innerHTML = '';
 
-            carrinho.forEach(item => {
-                total += item.preco;
-                resumoTexto += `- ${item.nome}\n`;
+            // Loop passando por cada item do objeto carrinho
+            for (let nome in carrinho) {
+                const item = carrinho[nome];
+                const subtotalItem = item.preco * item.qtd;
 
-                // Adiciona na tela
+                total += subtotalItem;
+
+                // Monta o texto que vai para o banco de dados (ex: 2x Hambúrguer Artesanal)
+                resumoTexto += `${item.qtd}x ${nome}\n`;
+
+                // Desenha na tela (ex: 2x Hambúrguer Artesanal | R$ 71,80)
                 listaItensDiv.innerHTML += `
                     <div class="item-carrinho">
-                        <span>${item.nome}</span>
-                        <span class="fw-bold">R$ ${item.preco.toFixed(2).replace('.', ',')}</span>
+                        <div>
+                            <span class="fw-bold me-2" style="color: #D32F2F;">${item.qtd}x</span>
+                            <span>${nome}</span>
+                        </div>
+                        <span class="fw-bold">R$ ${subtotalItem.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                     </div>
                 `;
-            });
+            }
 
-            // Atualiza os valores totais na tela e no input escondido
+            // Atualiza os valores totais
             totalTela.innerText = total.toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
@@ -231,19 +247,24 @@
             inputTotal.value = total;
         }
 
-        // Antes de enviar o formulário, junta os itens com as observações do cliente
+        // Antes de enviar o formulário
         formPedido.addEventListener('submit', function(e) {
-            if (carrinho.length === 0) {
-                e.preventDefault();
+            e.preventDefault(); // Impede o formulário de enviar para o PHP ainda!
+
+            if (Object.keys(carrinho).length === 0) {
                 alert("Adicione itens ao pedido antes de finalizar!");
                 return;
             }
 
-            const obsExtra = obsCliente.value ? `\n\nObs do Cliente: ${obsCliente.value}` : '';
-            inputObservacoes.value = resumoTexto + obsExtra;
+            // Pega o número da mesa e a observação e salva no navegador temporariamente
+            const numMesa = document.querySelector('input[name="mesa_id"]').value;
+            const textoObs = obsCliente.value;
 
-            // Limpa o carrinho depois de enviar!
-            localStorage.removeItem('carrinho');
+            localStorage.setItem('mesa_celestina', numMesa);
+            localStorage.setItem('obs_celestina', textoObs);
+
+            // Redireciona para a nova tela de pagamento (você precisa criar essa rota no index principal, ou passar a página direta)
+            window.location.href = 'index.php?page=pagamento';
         });
     </script>
 </body>

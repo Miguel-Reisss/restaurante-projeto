@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sabor & Tempo</title>
+    <title>Login - Celestina Point</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
@@ -36,7 +36,6 @@
             transition: background-color 0.3s, color 0.3s;
             margin: 0;
             position: relative;
-            /* Necessário para o botão de tema flutuar */
         }
 
         /* Botão de tema no canto da tela */
@@ -67,11 +66,6 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        .login-card h2 {
-            color: var(--header-text);
-            margin-bottom: 2rem;
-        }
-
         /* Ajuste dos inputs pro tema escuro */
         .form-control,
         .input-group-text {
@@ -83,12 +77,14 @@
         .form-control:focus {
             background-color: var(--bg-color);
             color: var(--text-color);
-            border-color: #F4A261;
+            border-color: #D32F2F;
+            /* Cor vermelha da Celestina Point */
             box-shadow: none;
         }
 
         .btn-primary-custom {
             background-color: #D32F2F;
+            /* Cor do botão combinar com a logo */
             border: none;
             border-radius: 8px;
             padding: 0.8rem;
@@ -111,10 +107,10 @@
     <button id="theme-toggle" class="btn-theme" title="Trocar Tema"><i class="ph ph-moon"></i></button>
 
     <div class="login-card">
-        <h2 class="text-center">
-            <i class="ph ph-cooking-pot fs-1 d-block mb-2" style="color: #F4A261;"></i>
-            <b>SABOR</b> <span style="font-weight: 300;">& TEMPO</span>
-        </h2>
+
+        <div class="text-center mb-4">
+            <img src="view/midia/logo.png" alt="Celestina Point" style="max-width: 180px; height: auto;">
+        </div>
 
         <form action="index.php?controller=funcionarios&action=login" method="POST">
 

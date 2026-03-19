@@ -80,6 +80,10 @@ switch ($page) {
     default:
         $viewFile = VIEW_PATH . 'home.php';
         break;
+        case 'pagamento':
+            $viewFile = VIEW_PATH . 'pagamento.php';
+            break;
+            
 }
 
 // Limpa qualquer saída anterior antes de carregar a view final
