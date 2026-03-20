@@ -229,13 +229,12 @@
     </div>
 
     <script>
-
-
-        // 2. RECUPERA OS DADOS DA TELA ANTERIOR
-        // Vamos pegar o carrinho pra calcular o total exato
+   // 1. RECUPERA OS DADOS DA TELA ANTERIOR
         let carrinho = JSON.parse(localStorage.getItem('carrinho_celestina')) || {};
         let total = 0;
-        let resumoTexto = "Itens do Pedido:\n";
+        
+        // Removemos a palavra "Itens do Pedido:" para ficar mais limpo
+        let resumoTexto = "";
 
         for (let nome in carrinho) {
             total += carrinho[nome].preco * carrinho[nome].qtd;
@@ -249,16 +248,16 @@
         });
         document.getElementById('input-total').value = total;
 
-        // Pega as observações e mesa do LocalStorage que salvamos na tela de "Finalizar"
-        const mesaCliente = localStorage.getItem('mesa_celestina') || 'Mesa não informada';
+        // Pega as observações e mesa do LocalStorage
+        const mesaCliente = localStorage.getItem('mesa_celestina') || '1'; // Padrão 1 se não informou
         const obsCliente = localStorage.getItem('obs_celestina') || '';
 
         document.getElementById('input-mesa').value = mesaCliente;
 
-        // Junta os itens com as observações e método de pagamento
+        // Junta APENAS os lanches com as observações do cliente (ex: tirar cebola)
         document.getElementById('input-obs').value = resumoTexto + (obsCliente ? `\nObs: ${obsCliente}` : '');
 
-        // 3. LÓGICA DO TROCO (Aparece só quando clica em dinheiro)
+        // 2. LÓGICA DO TROCO (Aparece só quando clica em dinheiro)
         const radios = document.querySelectorAll('input[name="metodo_pagamento"]');
         const caixaTroco = document.getElementById('caixa-troco');
 
@@ -268,26 +267,25 @@
                     caixaTroco.style.display = 'block';
                 } else {
                     caixaTroco.style.display = 'none';
-                    document.getElementById('valor-troco').value = ''; // Limpa o troco se mudar de ideia
+                    document.getElementById('valor-troco').value = ''; 
                 }
             });
         });
 
-        // 4. ENVIO FINAL
+        // 3. ENVIO FINAL
         document.getElementById('form-pagamento').addEventListener('submit', function(e) {
-            // Pega qual foi o método selecionado
-            const metodo = document.querySelector('input[name="metodo_pagamento"]:checked').value;
-            const troco = document.getElementById('valor-troco').value;
+            
+            // Cria um campo invisível para mandar o carrinho para a tabela itens_pedido do PHP
+            const inputCarrinho = document.createElement('input');
+            inputCarrinho.type = 'hidden';
+            inputCarrinho.name = 'carrinho_json';
+            inputCarrinho.value = JSON.stringify(carrinho);
+            this.appendChild(inputCarrinho);
 
-            // Adiciona o método de pagamento nas observações para o Cozinheiro/Caixa ver
-            let infoPagamento = `\n\nPagamento: ${metodo}`;
-            if (metodo === 'Dinheiro' && troco) {
-                infoPagamento += ` (Troco para R$ ${troco})`;
-            }
+            // ATENÇÃO: Nós APAGAMOS a parte que escrevia "Pagamento: X" nas observações!
+            // Agora as observações vão limpas só com os lanches para o cozinheiro.
 
-            document.getElementById('input-obs').value += infoPagamento;
-
-            // Limpa o carrinho e dados locais após enviar
+            // Limpa o carrinho do navegador do cliente após enviar o pedido
             localStorage.removeItem('carrinho_celestina');
             localStorage.removeItem('mesa_celestina');
             localStorage.removeItem('obs_celestina');

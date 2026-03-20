@@ -11,13 +11,12 @@ class Produto
     }
 
     // Salva o produto novo no banco
-    public function criar($nome, $descricao, $preco, $categoria_id, $imagem)
-    {
-        $sql = "INSERT INTO produtos (nome, descricao, preco, categoria_id, imagem, ativo) VALUES (?, ?, ?, ?, ?, 1)";
+    public function criar($nome, $descricao, $preco, $categoria_id, $imagem, $tem_tamanhos = 0, $preco_p = null, $preco_m = null, $preco_g = null) {
+        $sql = "INSERT INTO produtos (nome, descricao, preco, categoria_id, imagem, tem_tamanhos, preco_p, preco_m, preco_g, ativo) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([$nome, $descricao, $preco, $categoria_id, $imagem]);
+        return $stmt->execute([$nome, $descricao, $preco, $categoria_id, $imagem, $tem_tamanhos, $preco_p, $preco_m, $preco_g]);
     }
-
     // Lista todos os produtos para a tela do CEO
     public function listarTodos()
     {

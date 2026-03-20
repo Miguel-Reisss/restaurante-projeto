@@ -16,33 +16,36 @@ class ProdutoController
         require 'view/admin_produtos.php';
     }
 
-    public function store(): void
-    {
+   public function store(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nome = $_POST['nome'];
             $descricao = $_POST['descricao'];
-            $preco = str_replace(',', '.', $_POST['preco']);
             $categoria_id = $_POST['categoria_id'];
-            $imagem_nome = 'placeholder.png';
+            
+            // Pega os preços (se o campo estiver vazio, envia NULL ou 0)
+            $preco = !empty($_POST['preco']) ? str_replace(',', '.', $_POST['preco']) : 0;
+            $tem_tamanhos = isset($_POST['tem_tamanhos']) ? 1 : 0;
+            $preco_p = !empty($_POST['preco_p']) ? str_replace(',', '.', $_POST['preco_p']) : null;
+            $preco_m = !empty($_POST['preco_m']) ? str_replace(',', '.', $_POST['preco_m']) : null;
+            $preco_g = !empty($_POST['preco_g']) ? str_replace(',', '.', $_POST['preco_g']) : null;
 
-            // Lógica de Upload Inteligente
+            $imagem_nome = 'placeholder.png'; 
+
             if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
                 $extensao = strtolower(pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION));
                 $imagem_nome = time() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', $nome) . '.' . $extensao;
-
                 $diretorio_destino = 'view/midia/uploads/';
-
-                // MÁGICA AQUI: Se a pasta não existir, o PHP cria ela agora!
+                
                 if (!is_dir($diretorio_destino)) {
                     mkdir($diretorio_destino, 0777, true);
                 }
-
-                $destino = $diretorio_destino . $imagem_nome;
-                move_uploaded_file($_FILES['imagem']['tmp_name'], $destino);
+                move_uploaded_file($_FILES['imagem']['tmp_name'], $diretorio_destino . $imagem_nome);
             }
 
-            $this->produtoModel->criar($nome, $descricao, $preco, $categoria_id, $imagem_nome);
-            header('Location: index.php?controller=produto&action=index');
+            // Envia tudo pro banco!
+            $this->produtoModel->criar($nome, $descricao, $preco, $categoria_id, $imagem_nome, $tem_tamanhos, $preco_p, $preco_m, $preco_g);
+            
+            header('Location: index.php?controller=admin&action=index');
             exit;
         }
     }
@@ -53,7 +56,7 @@ class ProdutoController
         if ($id) {
             $this->produtoModel->alternarStatus($id);
         }
-        header('Location: index.php?controller=produto&action=index');
+       header('Location: index.php?controller=admin&action=index');
         exit;
     }
 
@@ -63,7 +66,7 @@ class ProdutoController
         if ($id) {
             $this->produtoModel->excluir($id);
         }
-        header('Location: index.php?controller=produto&action=index');
+       header('Location: index.php?controller=admin&action=index');
         exit;
     }
 }
