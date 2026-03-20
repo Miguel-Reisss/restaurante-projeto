@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Tempo de geração: 19/03/2026 às 14:49
+-- Tempo de geração: 20/03/2026 às 14:52
 -- Versão do servidor: 10.11.14-MariaDB-0+deb12u2
 -- Versão do PHP: 8.2.29
 
@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
+  `categoria_id` int(11) NOT NULL,
   `nome` varchar(100) NOT NULL,
   `data_criacao` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -37,10 +38,10 @@ CREATE TABLE `categorias` (
 -- Despejando dados para a tabela `categorias`
 --
 
-INSERT INTO `categorias` (`id`, `nome`, `data_criacao`) VALUES
-(1, 'Lanches Especiais', '2026-03-12 09:00:15'),
-(2, 'Porções', '2026-03-12 09:00:15'),
-(3, 'Bebidas', '2026-03-12 09:00:15');
+INSERT INTO `categorias` (`id`, `categoria_id`, `nome`, `data_criacao`) VALUES
+(1, 0, 'Lanches Especiais', '2026-03-12 09:00:15'),
+(2, 0, 'Porções', '2026-03-12 09:00:15'),
+(3, 0, 'Bebidas', '2026-03-12 09:00:15');
 
 -- --------------------------------------------------------
 
@@ -73,10 +74,10 @@ INSERT INTO `funcionarios` (`id`, `nome`, `email`, `senha_hash`, `nivel_acesso`,
 
 CREATE TABLE `itens_pedido` (
   `id` int(11) NOT NULL,
-  `pedido_id` int(11) NOT NULL,
-  `produto_id` int(11) NOT NULL,
+  `id_pedido` int(11) NOT NULL,
+  `id_produto` int(11) NOT NULL,
   `quantidade` int(11) NOT NULL DEFAULT 1,
-  `preco_unitario` decimal(10,2) NOT NULL
+  `subtotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -97,9 +98,8 @@ CREATE TABLE `mesas` (
 --
 
 INSERT INTO `mesas` (`id`, `numero`, `capacidade`, `status`) VALUES
-(1, 1, 4, 'livre'),
-(2, 2, 2, 'livre'),
-(3, 3, 6, 'livre');
+(2, 1, 2, 'livre'),
+(4, 2, 10, 'livre');
 
 -- --------------------------------------------------------
 
@@ -109,7 +109,7 @@ INSERT INTO `mesas` (`id`, `numero`, `capacidade`, `status`) VALUES
 
 CREATE TABLE `pedidos` (
   `id` int(11) NOT NULL,
-  `mesa_id` int(11) DEFAULT NULL,
+  `id_mesa` int(11) DEFAULT NULL,
   `tipo` varchar(50) DEFAULT 'salao',
   `status` varchar(50) DEFAULT 'aberto',
   `total` decimal(10,2) DEFAULT 0.00,
@@ -121,14 +121,17 @@ CREATE TABLE `pedidos` (
 -- Despejando dados para a tabela `pedidos`
 --
 
-INSERT INTO `pedidos` (`id`, `mesa_id`, `tipo`, `status`, `total`, `observacoes`, `data_criacao`) VALUES
-(11, 1, 'salao', 'entregue', 35.90, 'Itens do Pedido:\r\n1x Hambúrguer Artesanal\r\n\r\n\r\nPagamento: Pix', '2026-03-19 10:58:19'),
-(12, 2, 'salao', 'entregue', 85.90, 'Itens do Pedido:\r\n1x Hambúrguer Artesanal\r\n1x Fritas Cheddar & Bacon (G)\r\n1x Água Mineral Sem Gás (500ml)\r\n\r\n\r\nPagamento: Cartão de Crédito', '2026-03-19 11:10:44'),
-(14, 1, 'salao', 'entregue', 0.00, 'Itens do Pedido:\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:14:57'),
-(15, 1, 'salao', 'entregue', 35.90, 'Itens do Pedido:\r\n1x Hambúrguer Artesanal\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:28:35'),
+INSERT INTO `pedidos` (`id`, `id_mesa`, `tipo`, `status`, `total`, `observacoes`, `data_criacao`) VALUES
+(11, 2, 'salao', 'entregue', 35.90, 'Itens do Pedido:\n1x Hambúrguer Artesanal\n\n\nPagamento: Pix', '2026-03-19 10:58:19'),
+(12, 2, 'salao', 'entregue', 85.90, 'Itens do Pedido:\n1x Hambúrguer Artesanal\n1x Fritas Cheddar & Bacon (G)\n1x Água Mineral Sem Gás (500ml)\n\n\nPagamento: Cartão de Crédito', '2026-03-19 11:10:44'),
+(14, 2, 'salao', 'entregue', 0.00, 'Itens do Pedido:\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:14:57'),
+(15, 2, 'salao', 'entregue', 35.90, 'Itens do Pedido:\r\n1x Hambúrguer Artesanal\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:28:35'),
 (16, 2, 'salao', 'entregue', 35.90, 'Itens do Pedido:\r\n1x Hambúrguer Artesanal\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:31:35'),
-(18, 1, 'salao', 'entregue', 28.90, 'Itens do Pedido:\r\n1x Chicken Crispy\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:43:32'),
-(19, 1, 'salao', 'pronto', 70.80, 'Itens do Pedido:\r\n1x Fritas Cheddar & Bacon (M)\r\n1x Hambúrguer Artesanal\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:48:03');
+(18, 4, 'salao', 'entregue', 28.90, 'Itens do Pedido:\r\n1x Chicken Crispy\r\n\r\n\r\nPagamento: Pix', '2026-03-19 11:43:32'),
+(19, 2, 'salao', 'pronto', 70.80, 'Itens do Pedido:\n1x Fritas Cheddar & Bacon (M)\n1x Hambúrguer Artesanal\n\n\nPagamento: Pix', '2026-03-19 11:48:03'),
+(22, 2, 'salao', 'aberto', 22.50, 'Itens do Pedido:\n1x Batata Frita Tradicional (M)\n\n\nPagamento: Cartão de Crédito', '2026-03-20 11:27:35'),
+(23, NULL, 'salao', 'aberto', 35.90, 'Itens do Pedido:\r\n1x Hambúrguer Artesanal\r\n\r\n\r\nPagamento: Cartão de Crédito', '2026-03-20 11:40:09'),
+(24, NULL, 'salao', 'aberto', 35.90, 'Itens do Pedido:\r\n1x Hambúrguer Artesanal\r\n\r\n\r\nPagamento: Cartão de Crédito', '2026-03-20 11:40:40');
 
 -- --------------------------------------------------------
 
@@ -141,9 +144,17 @@ CREATE TABLE `produtos` (
   `nome` varchar(150) NOT NULL,
   `descricao` text DEFAULT NULL,
   `preco` decimal(10,2) NOT NULL,
+  `imagem` varchar(255) DEFAULT NULL,
   `categoria_id` int(11) DEFAULT NULL,
   `ativo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `produtos`
+--
+
+INSERT INTO `produtos` (`id`, `nome`, `descricao`, `preco`, `imagem`, `categoria_id`, `ativo`) VALUES
+(1, 'sergio', 'alzira', 1000.00, '1774016112_sergio.jpg', 1, 1);
 
 --
 -- Índices para tabelas despejadas
@@ -167,29 +178,27 @@ ALTER TABLE `funcionarios`
 --
 ALTER TABLE `itens_pedido`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_item_pedido` (`pedido_id`),
-  ADD KEY `fk_item_produto` (`produto_id`);
+  ADD KEY `fk_item_pedido` (`id_pedido`),
+  ADD KEY `fk_item_produto` (`id_produto`);
 
 --
 -- Índices de tabela `mesas`
 --
 ALTER TABLE `mesas`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `numero` (`numero`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_pedido_mesa` (`mesa_id`);
+  ADD KEY `fk_pedido_mesa` (`id_mesa`);
 
 --
 -- Índices de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_produto_categoria` (`categoria_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT para tabelas despejadas
@@ -217,19 +226,19 @@ ALTER TABLE `itens_pedido`
 -- AUTO_INCREMENT de tabela `mesas`
 --
 ALTER TABLE `mesas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restrições para tabelas despejadas
@@ -239,14 +248,14 @@ ALTER TABLE `produtos`
 -- Restrições para tabelas `itens_pedido`
 --
 ALTER TABLE `itens_pedido`
-  ADD CONSTRAINT `fk_item_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_item_produto` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`);
+  ADD CONSTRAINT `fk_item_pedido` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_item_produto` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id`);
 
 --
 -- Restrições para tabelas `pedidos`
 --
 ALTER TABLE `pedidos`
-  ADD CONSTRAINT `fk_pedido_mesa` FOREIGN KEY (`mesa_id`) REFERENCES `mesas` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_pedido_mesa` FOREIGN KEY (`id_mesa`) REFERENCES `mesas` (`id`);
 
 --
 -- Restrições para tabelas `produtos`
