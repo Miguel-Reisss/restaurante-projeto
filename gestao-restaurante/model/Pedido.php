@@ -12,10 +12,10 @@ class Pedido
 
     public function criar($dados)
     {
-        $sql = "INSERT INTO pedidos (mesa_id, tipo, status, total, observacoes) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO pedidos (id_mesa, tipo, status, total, observacoes) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
-            $dados['mesa_id'],
+            $dados['id_mesa'],
             $dados['tipo'],
             $dados['status'],
             $dados['total'],
@@ -27,7 +27,7 @@ class Pedido
     // NOVA FUNÇÃO: Salva o pagamento na tabela separada
     public function salvarPagamento($pedido_id, $metodo, $valor, $troco_para)
     {
-        $sql = "INSERT INTO pagamentos (pedido_id, metodo, valor, troco_para) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO pagamentos (id_pedido, metodo, valor, troco_para) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([$pedido_id, $metodo, $valor, $troco_para]);
     }

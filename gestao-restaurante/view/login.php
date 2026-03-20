@@ -102,7 +102,7 @@
     <div class="login-card">
 
         <div class="text-center mb-4">
-            <img src="view/midia/logo.png" alt="Celestina Point" style="max-width: 180px; height: auto;">
+            <img src="view/midia/logo2.png" alt="Celestina Point" style="max-width: 180px; height: auto;">
         </div>
 
         <form action="index.php?controller=funcionarios&action=login" method="POST">

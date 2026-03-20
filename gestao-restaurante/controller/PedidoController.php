@@ -20,8 +20,12 @@ class PedidoController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+            // 1. CORREÇÃO DA MESA: Garante que só passa o número para o banco (ex: "Mesa 12" vira 12)
+            $id_mesa = preg_replace('/[^0-9]/', '', $_POST['mesa_id'] ?? '');
+
             $dados = [
-                'mesa_id' => $_POST['mesa_id'] ?? null,
+                // Se a mesa vier vazia, assume mesa 1 por padrão para não dar erro de NULL
+                'id_mesa' => !empty($id_mesa) ? (int)$id_mesa : 1,
                 'tipo' => $_POST['tipo'] ?? 'salao',
                 'status' => 'aberto',
                 'total' => round(floatval($_POST['total']), 2),
@@ -29,15 +33,28 @@ class PedidoController
             ];
 
             try {
-                // 1. Cria o Pedido
+                // 1. Cria o Pedido na tabela 'pedidos'
                 $pedido_id = $this->pedidoModel->criar($dados);
 
-                // 2. Cria o Pagamento na tabela nova
+                // 2. Cria o Pagamento na tabela 'pagamentos'
                 $metodo = $_POST['metodo_pagamento'] ?? 'Não informado';
                 $troco = !empty($_POST['troco_para']) ? floatval($_POST['troco_para']) : null;
                 $this->pedidoModel->salvarPagamento($pedido_id, $metodo, $dados['total'], $troco);
 
-                // 3. Redireciona para a tela de Sucesso Bonita!
+                // 3. CORREÇÃO DOS ITENS: Salva os lanches na tabela 'itens_pedido'
+                if (!empty($_POST['carrinho_json'])) {
+                    $carrinho = json_decode($_POST['carrinho_json'], true);
+                    if (is_array($carrinho)) {
+                        foreach ($carrinho as $nome => $item) {
+                            $subtotal = $item['preco'] * $item['qtd'];
+
+                            // Por enquanto enviamos o ID do produto como 0 (até atualizarmos o cardápio do cliente)
+                            $this->pedidoModel->salvarItem($pedido_id, 0, $item['qtd'], $subtotal);
+                        }
+                    }
+                }
+
+                // 4. Redireciona para a tela de Sucesso Bonita!
                 header('Location: index.php?page=sucesso');
                 exit;
             } catch (Exception $e) {

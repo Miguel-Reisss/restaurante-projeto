@@ -1,104 +1,47 @@
 <?php
-
-declare(strict_types=1);
-
-require_once __DIR__ . '/../config/conexao.php';
+require_once 'config/conexao.php';
 
 class Produto
 {
-    private PDO $conn;
+    private $conn;
 
     public function __construct()
     {
         $this->conn = Conexao::getConnection();
     }
 
-    /**
-     * Cria um novo produto.
-     *
-     * @param array<string, mixed> $dados
-     */
-    public function criar(array $dados): int
+    // Salva o produto novo no banco
+    public function criar($nome, $descricao, $preco, $categoria_id, $imagem)
     {
-        $sql = 'INSERT INTO produtos (nome, descricao, preco, categoria_id, ativo)
-                VALUES (:nome, :descricao, :preco, :categoria_id, :ativo)';
-
+        $sql = "INSERT INTO produtos (nome, descricao, preco, categoria_id, imagem, ativo) VALUES (?, ?, ?, ?, ?, 1)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':nome', $dados['nome'] ?? '');
-        $stmt->bindValue(':descricao', $dados['descricao'] ?? '');
-        $stmt->bindValue(':preco', $dados['preco'] ?? 0);
-        $stmt->bindValue(':categoria_id', $dados['categoria_id'] ?? null, PDO::PARAM_INT);
-        $stmt->bindValue(':ativo', isset($dados['ativo']) ? (int) $dados['ativo'] : 1, PDO::PARAM_INT);
-
-        $stmt->execute();
-
-        return (int) $this->conn->lastInsertId();
+        return $stmt->execute([$nome, $descricao, $preco, $categoria_id, $imagem]);
     }
 
-    /**
-     * Retorna um produto pelo ID.
-     */
-    public function buscarPorId(int $id): ?array
+    // Lista todos os produtos para a tela do CEO
+    public function listarTodos()
     {
-        $sql  = 'SELECT * FROM produtos WHERE id = :id LIMIT 1';
+        // Puxa o produto e também o nome da categoria dele
+        $sql = "SELECT p.*, c.nome as categoria_nome FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id ORDER BY p.id DESC";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-
-        $produto = $stmt->fetch();
-
-        return $produto ?: null;
-    }
-
-    /**
-     * Lista todos os produtos (pode ser refinado com filtros depois).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public function listarTodos(): array
-    {
-        $sql  = 'SELECT * FROM produtos ORDER BY nome';
-        $stmt = $this->conn->query($sql);
-
         return $stmt->fetchAll();
     }
 
-    /**
-     * Atualiza os dados de um produto.
-     *
-     * @param array<string, mixed> $dados
-     */
-    public function atualizar(int $id, array $dados): bool
+    // Botão mágico de Esgotado / Disponível
+    public function alternarStatus($id)
     {
-        $sql = 'UPDATE produtos
-                SET nome = :nome,
-                    descricao = :descricao,
-                    preco = :preco,
-                    categoria_id = :categoria_id,
-                    ativo = :ativo
-                WHERE id = :id';
-
+        // Se estiver 1 vira 0, se estiver 0 vira 1
+        $sql = "UPDATE produtos SET ativo = NOT ativo WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':nome', $dados['nome'] ?? '');
-        $stmt->bindValue(':descricao', $dados['descricao'] ?? '');
-        $stmt->bindValue(':preco', $dados['preco'] ?? 0);
-        $stmt->bindValue(':categoria_id', $dados['categoria_id'] ?? null, PDO::PARAM_INT);
-        $stmt->bindValue(':ativo', isset($dados['ativo']) ? (int) $dados['ativo'] : 1, PDO::PARAM_INT);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-        return $stmt->execute();
+        return $stmt->execute([$id]);
     }
 
-    /**
-     * Remove um produto (remoção física por enquanto).
-     */
-    public function deletar(int $id): bool
+    // Apaga o produto do banco
+    public function excluir($id)
     {
-        $sql  = 'DELETE FROM produtos WHERE id = :id';
+        $sql = "DELETE FROM produtos WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-        return $stmt->execute();
+        return $stmt->execute([$id]);
     }
 }
-
