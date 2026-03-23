@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1deb1+deb12u1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Tempo de geração: 23/03/2026 às 14:56
--- Versão do servidor: 10.11.14-MariaDB-0+deb12u2
--- Versão do PHP: 8.2.29
+-- Host: 127.0.0.1
+-- Tempo de geração: 23/03/2026 às 22:38
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -203,13 +203,6 @@ CREATE TABLE `produtos` (
   `preco_m` decimal(10,2) DEFAULT NULL,
   `preco_g` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Despejando dados para a tabela `produtos`
---
-
-INSERT INTO `produtos` (`id`, `nome`, `descricao`, `preco`, `imagem`, `categoria_id`, `ativo`, `tem_tamanho`, `tem_tamanhos`, `preco_p`, `preco_m`, `preco_g`) VALUES
-(28, 'Hambúrguer sergio', 'Alzira fruta', 1000.00, '1774277308_Hambrguersergio.jpg', 1, 1, b'0', 0, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
