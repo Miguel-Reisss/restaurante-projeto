@@ -1,3 +1,12 @@
+<?php
+require_once 'config/conexao.php';
+$pdo = Conexao::getConnection();
+
+// Busca as mesas cadastradas e ordena pelo número
+$stmtMesas = $pdo->query("SELECT numero FROM mesas WHERE status = 'livre' ORDER BY numero ASC");
+$mesasCadastradas = $stmtMesas->fetchAll();
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -19,7 +28,6 @@
             --text-muted: #6c757d;
         }
 
-       
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -83,13 +91,13 @@
             border-bottom: none;
         }
 
-        .form-control {
+        .form-control, .form-select {
             background-color: var(--bg-color);
             color: var(--text-color);
             border-color: var(--border-color);
         }
 
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             background-color: var(--bg-color);
             color: var(--text-color);
             box-shadow: none;
@@ -115,7 +123,6 @@
 
         <img src="view/midia/logo.png" alt="Celestina Point" style="max-height: 45px; width: auto;">
 
-       
     </div>
 
     <div class="container" style="max-width: 800px;">
@@ -139,8 +146,13 @@
                 <h5 class="fw-bold mb-3"><i class="ph ph-armchair me-2" style="color: #F4A261;"></i> Informações da Mesa</h5>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Número da Mesa *</label>
-                    <input type="number" name="mesa_id" class="form-control form-control-lg" placeholder="Ex: 5" required min="1">
+                    <label class="form-label fw-bold small">Número da Mesa *</label>
+                    <select name="mesa_id" class="form-select form-select-lg" required>
+                        <option value="" disabled selected>Selecione a sua mesa...</option>
+                        <?php foreach ($mesasCadastradas as $mesa): ?>
+                            <option value="<?= $mesa['numero'] ?>">Mesa <?= $mesa['numero'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="mb-3">
@@ -166,11 +178,7 @@
     </div>
 
     <script>
-        
-      
-
-        
-        // 2. LER O CARRINHO NO NOVO FORMATO (OBJETO)
+        // LER O CARRINHO NO NOVO FORMATO (OBJETO)
         const listaItensDiv = document.getElementById('lista-itens');
         const totalTela = document.getElementById('total-tela');
         const inputTotal = document.getElementById('input-total');
@@ -229,13 +237,13 @@
             }
 
             // Pega o número da mesa e a observação e salva no navegador temporariamente
-            const numMesa = document.querySelector('input[name="mesa_id"]').value;
+            const numMesa = document.querySelector('select[name="mesa_id"]').value; // Ajustado aqui para ler o <select>
             const textoObs = obsCliente.value;
 
             localStorage.setItem('mesa_celestina', numMesa);
             localStorage.setItem('obs_celestina', textoObs);
 
-            // Redireciona para a nova tela de pagamento (você precisa criar essa rota no index principal, ou passar a página direta)
+            // Redireciona para a nova tela de pagamento
             window.location.href = 'index.php?page=pagamento';
         });
     </script>
