@@ -67,6 +67,7 @@
                     <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-mesas" type="button"><i class="ph ph-armchair"></i> Mesas</button>
                     <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-funcionarios" type="button"><i class="ph ph-users"></i> Funcionários</button>
                 </div>
+
                 <div class="mt-5 px-3">
                     <button type="button" class="btn btn-outline-light w-100 mb-2" data-bs-toggle="modal" data-bs-target="#modalVerPedidos">
                         <i class="ph ph-receipt"></i> Ver Pedidos
@@ -268,6 +269,86 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalVerPedidos" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header" style="background-color: #2B2D42; color: white; border-radius: 12px 12px 0 0;">
+                    <h5 class="modal-title fw-bold"><i class="ph ph-receipt me-2"></i>Andamento dos Pedidos</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap gap-3">
+                        <div class="input-group input-group-sm" style="width: 220px;">
+                            <span class="input-group-text bg-white"><i class="ph ph-magnifying-glass"></i></span>
+                            <input type="text" id="pesquisaPedidoCEO" class="form-control" placeholder="Buscar Pedido...">
+                        </div>
+
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" id="toggleEntreguesCEO" style="cursor: pointer;">
+                            <label class="form-check-label fw-bold text-muted small user-select-none" for="toggleEntreguesCEO" style="cursor: pointer;">
+                                Ocultar Entregues
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <?php if (empty($pedidos)): ?>
+                            <div class="col-12 text-center py-5">
+                                <i class="ph ph-clipboard-text text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">Nenhum pedido no momento.</p>
+                            </div>
+                        <?php else: ?>
+                            <?php foreach ($pedidos as $pedido): ?>
+                                <?php
+                                $badgeClass = 'bg-secondary';
+                                if ($pedido['status'] === 'aberto') $badgeClass = 'bg-danger';
+                                elseif ($pedido['status'] === 'preparando') $badgeClass = 'bg-warning text-dark';
+                                elseif ($pedido['status'] === 'pronto') $badgeClass = 'bg-success';
+
+                                $dataFormatada = isset($pedido['data_criacao']) ? date('d/m/Y \à\s H:i', strtotime($pedido['data_criacao'])) : '';
+
+                                // Classe para identificar os entregues
+                                $classeFiltroCEO = ($pedido['status'] === 'entregue') ? 'pedido-entregue-ceo' : '';
+                                ?>
+
+                                <div class="col-md-6 col-lg-4 pedido-wrapper-ceo <?= $classeFiltroCEO ?>">
+                                    <div class="card border-0 shadow-sm h-100" style="border-radius: 10px;">
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div>
+                                                    <h6 class="fw-bold mb-0 titulo-pedido-ceo">Pedido #<?= $pedido['id'] ?></h6>
+                                                    <small class="text-muted">Mesa <?= htmlspecialchars($pedido['id_mesa']) ?></small>
+                                                </div>
+                                                <span class="badge <?= $badgeClass ?>"><?= ucfirst($pedido['status']) ?></span>
+                                            </div>
+
+                                            <div class="mb-3 flex-grow-1" style="font-size: 0.85rem; max-height: 90px; overflow-y: auto; background: #f8f9fa; padding: 8px; border-radius: 6px; border: 1px dashed #dee2e6;">
+                                                <strong class="text-dark">Itens:</strong><br>
+                                                <?= nl2br(htmlspecialchars($pedido['itens_resumo'] ?? '')) ?>
+
+                                                <?php if (!empty(trim($pedido['observacoes'] ?? ''))): ?>
+                                                    <div class="mt-2 text-danger">
+                                                        <strong>Obs:</strong> <?= htmlspecialchars($pedido['observacoes']) ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between align-items-end mt-auto border-top pt-2">
+                                                <span class="text-success fw-bold">R$ <?= number_format($pedido['total'], 2, ',', '.') ?></span>
+                                                <small class="text-muted" style="font-size: 0.75rem;"><i class="ph ph-clock"></i> <?= $dataFormatada ?></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="modalNovoProduto" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -397,27 +478,14 @@
                 </div>
                 <div class="modal-body p-4">
                     <form action="index.php?controller=funcionarios&action=store" method="POST" autocomplete="off">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Nome Completo *</label>
-                            <input type="text" name="nome" class="form-control" placeholder="Ex: João Silva" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">E-mail para Login *</label>
-                            <input type="email" name="email" class="form-control" placeholder="joao@restaurante.com" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Senha de Acesso *</label>
-                            <input type="password" name="senha" class="form-control" placeholder="******" required autocomplete="new-password">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold small">Nível de Acesso *</label>
-                            <select name="nivel_acesso" class="form-select">
+                        <div class="mb-3"><label class="form-label fw-bold small">Nome *</label><input type="text" name="nome" class="form-control" required autocomplete="off"></div>
+                        <div class="mb-3"><label class="form-label fw-bold small">E-mail *</label><input type="text" name="email" class="form-control" required autocomplete="off"></div>
+                        <div class="mb-3"><label class="form-label fw-bold small">Senha *</label><input type="password" name="senha" class="form-control" required autocomplete="new-password"></div>
+                        <div class="mb-4"><label class="form-label fw-bold small">Nível *</label><select name="nivel_acesso" class="form-select">
                                 <option value="garcom">Garçom</option>
                                 <option value="caixa">Caixa</option>
                                 <option value="admin">Administrador</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-lg w-100 fw-bold" style="background-color: #D32F2F; color: white;">Cadastrar Acesso</button>
+                            </select></div><button class="btn btn-lg w-100 fw-bold" style="background-color: #D32F2F; color: white;">Cadastrar</button>
                     </form>
                 </div>
             </div>
@@ -431,13 +499,10 @@
                     <h5 class="modal-title fw-bold"><i class="ph ph-pencil-simple me-2"></i>Editar Funcionário</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <form id="formEditarFuncionario" method="POST"><input type="hidden" name="ativo" value="1">
-                        <div class="mb-3"><label class="form-label fw-bold small">Nome *</label><input type="text" name="nome" id="edit_func_nome" class="form-control" required></div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">E-mail *</label>
-                            <input type="text" name="email" id="edit_func_email" class="form-control" placeholder="E-mail" required autocomplete="off">
-                        </div>
-                        <div class="mb-3"><label class="form-label fw-bold small">Nova Senha (Opcional)</label><input type="password" name="senha" class="form-control" placeholder="Deixe em branco para manter a atual"></div>
+                    <form id="formEditarFuncionario" method="POST" autocomplete="off"><input type="hidden" name="ativo" value="1">
+                        <div class="mb-3"><label class="form-label fw-bold small">Nome *</label><input type="text" name="nome" id="edit_func_nome" class="form-control" required autocomplete="off"></div>
+                        <div class="mb-3"><label class="form-label fw-bold small">E-mail *</label><input type="text" name="email" id="edit_func_email" class="form-control" required autocomplete="off"></div>
+                        <div class="mb-3"><label class="form-label fw-bold small">Nova Senha (Opcional)</label><input type="password" name="senha" class="form-control" placeholder="Deixe em branco para manter a atual" autocomplete="new-password"></div>
                         <div class="mb-4"><label class="form-label fw-bold small">Nível *</label><select name="nivel_acesso" id="edit_func_nivel" class="form-select">
                                 <option value="garcom">Garçom</option>
                                 <option value="caixa">Caixa</option>
@@ -494,13 +559,46 @@
             document.querySelectorAll('.btn-edit-funcionario').forEach(btn => {
                 btn.addEventListener('click', function() {
                     let id = this.dataset.id;
-                    // Joga o ID no URL do Formulário
                     document.getElementById('formEditarFuncionario').action = 'index.php?controller=funcionarios&action=update&id=' + id;
                     document.getElementById('edit_func_nome').value = this.dataset.nome;
                     document.getElementById('edit_func_email').value = this.dataset.email;
                     document.getElementById('edit_func_nivel').value = this.dataset.nivel;
                 });
             });
+
+            // 5. Filtro e Pesquisa do Modal de Pedidos do CEO
+            const toggleCEO = document.getElementById('toggleEntreguesCEO');
+            const searchCEO = document.getElementById('pesquisaPedidoCEO');
+            const cardsCEO = document.querySelectorAll('.pedido-wrapper-ceo');
+
+            if (toggleCEO && searchCEO) {
+                const ocultarCEO = localStorage.getItem('ocultar_entregues_ceo') === 'true';
+                toggleCEO.checked = ocultarCEO;
+
+                function aplicarFiltrosCEO() {
+                    const esconder = toggleCEO.checked;
+                    const termo = searchCEO.value.toLowerCase().replace('#', '').trim();
+
+                    cardsCEO.forEach(card => {
+                        const isEntregue = card.classList.contains('pedido-entregue-ceo');
+                        const titulo = card.querySelector('.titulo-pedido-ceo').innerText.toLowerCase();
+
+                        let mostrar = true;
+                        if (esconder && isEntregue) mostrar = false;
+                        if (termo !== '' && !titulo.includes(termo)) mostrar = false;
+
+                        card.style.display = mostrar ? 'block' : 'none';
+                    });
+                    localStorage.setItem('ocultar_entregues_ceo', esconder);
+                }
+
+                toggleCEO.addEventListener('change', aplicarFiltrosCEO);
+                searchCEO.addEventListener('input', aplicarFiltrosCEO);
+
+                // Dispara o filtro assim que abre a janela
+                document.getElementById('modalVerPedidos').addEventListener('shown.bs.modal', aplicarFiltrosCEO);
+            }
+
         });
     </script>
 </body>

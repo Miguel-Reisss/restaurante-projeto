@@ -9,15 +9,23 @@ class Pedido {
     }
 
     // 1. Cria o Pedido (já com a correção do id_mesa)
-    public function criar($dados) {
-        $sql = "INSERT INTO pedidos (id_mesa, tipo, status, total, observacoes) VALUES (?, ?, ?, ?, ?)";
+    public function criar($dados)
+    {
+        // Agora incluímos o itens_resumo no INSERT!
+        $sql = "INSERT INTO pedidos (id_mesa, tipo, status, total, observacoes, itens_resumo) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            $dados['id_mesa'], $dados['tipo'], $dados['status'], $dados['total'], $dados['observacoes']
-        ]);
-        return $this->conn->lastInsertId(); // Retorna o ID gerado
-    }
 
+        $stmt->execute([
+            $dados['id_mesa'],
+            $dados['tipo'],
+            $dados['status'],
+            $dados['total'],
+            $dados['observacoes'],
+            $dados['itens_resumo'] // Inserindo no banco
+        ]);
+
+        return $this->conn->lastInsertId();
+    }
     // 2. Salva o Pagamento na tabela nova
     public function salvarPagamento($id_pedido, $metodo, $valor, $troco_para) {
         $sql = "INSERT INTO pagamentos (id_pedido, metodo, valor, troco_para) VALUES (?, ?, ?, ?)";

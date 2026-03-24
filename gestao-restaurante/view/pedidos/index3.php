@@ -78,15 +78,22 @@
 
     <div class="container-fluid px-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 flex-wrap gap-3">
             <h5 class="fw-bold m-0">Pedidos Recentes</h5>
-            <div class="d-flex align-items-center gap-3">
+
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <div class="input-group input-group-sm" style="width: 200px;">
+                    <span class="input-group-text bg-white"><i class="ph ph-magnifying-glass"></i></span>
+                    <input type="text" id="pesquisaPedido" class="form-control" placeholder="Buscar Pedido...">
+                </div>
+
                 <div class="form-check form-switch m-0 pt-1">
                     <input class="form-check-input" type="checkbox" id="toggleEntregues" style="cursor: pointer;">
                     <label class="form-check-label fw-bold text-muted small user-select-none" for="toggleEntregues" style="cursor: pointer;">
                         Ocultar Entregues
                     </label>
                 </div>
+
                 <button onclick="window.location.reload();" class="btn btn-primary btn-sm fw-bold">
                     <i class="ph ph-arrows-clockwise"></i> Atualizar
                 </button>
@@ -107,7 +114,7 @@
                     $badgeClass = 'bg-secondary';
                     $statusTexto = ucfirst($pedido['status']);
 
-                    // Adiciona uma classe CSS especial APENAS nos pedidos finalizados
+                    // Marca os entregues para o filtro funcionar
                     $classeFiltro = ($pedido['status'] === 'entregue') ? 'pedido-entregue' : '';
 
                     if ($pedido['status'] === 'aberto') {
@@ -118,19 +125,17 @@
                     } elseif ($pedido['status'] === 'pronto') {
                         $badgeClass = 'bg-success';
                     }
+
+                    $dataFormatada = isset($pedido['data_criacao']) ? date('d/m/Y \à\s H:i', strtotime($pedido['data_criacao'])) : 'Data indisponível';
                     ?>
 
-                    <div class="col-12 col-md-6 col-lg-4 col-xl-3 <?= $classeFiltro ?>">
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-3 pedido-wrapper <?= $classeFiltro ?>">
                         <div class="pedido-card">
 
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
-                                    <h5 class="fw-bold mb-0">Pedido #<?= $pedido['id'] ?></h5>
+                                    <h5 class="fw-bold mb-0 titulo-pedido">Pedido #<?= $pedido['id'] ?></h5>
                                     <span class="text-muted small">Mesa: <?= htmlspecialchars($pedido['id_mesa']) ?></span>
-
-                                    <?php
-                                    $dataFormatada = isset($pedido['data_criacao']) ? date('d/m/Y \à\s H:i', strtotime($pedido['data_criacao'])) : 'Data indisponível';
-                                    ?>
                                     <br>
                                     <span class="text-muted" style="font-size: 0.75rem;">
                                         <i class="ph ph-clock"></i> <?= $dataFormatada ?>
@@ -142,7 +147,13 @@
                             <h6 class="fw-bold text-success">Total: R$ <?= number_format($pedido['total'], 2, ',', '.') ?></h6>
 
                             <div class="observacoes-box my-3">
-                                <?= htmlspecialchars($pedido['observacoes']) ?>
+                                <strong class="text-dark">Itens do Pedido:</strong><br>
+                                <span style="font-size: 0.95rem;"><?= nl2br(htmlspecialchars($pedido['itens_resumo'])) ?></span>
+
+                                <?php if (!empty(trim($pedido['observacoes']))): ?>
+                                    <hr style="margin: 8px 0; border-color: #ccc;">
+                                    <strong class="text-danger">Obs:</strong> <?= htmlspecialchars($pedido['observacoes']) ?>
+                                <?php endif; ?>
                             </div>
 
                             <div class="mt-auto border-top pt-3" style="border-color: var(--border-color) !important;">
@@ -168,27 +179,41 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggle = document.getElementById('toggleEntregues');
-            const pedidosEntregues = document.querySelectorAll('.pedido-entregue');
+            const search = document.getElementById('pesquisaPedido');
+            const cards = document.querySelectorAll('.pedido-wrapper');
 
-            // 1. Verifica na memória se o Caixa já tinha deixado o botão marcado antes
+            // Puxa a preferência do switch na memória
             const ocultar = localStorage.getItem('ocultar_entregues_celestina') === 'true';
             toggle.checked = ocultar;
 
-            // 2. Função que esconde ou mostra os cards com a classe .pedido-entregue
-            function aplicarFiltro() {
-                pedidosEntregues.forEach(pedido => {
-                    pedido.style.display = toggle.checked ? 'none' : 'block';
+            function aplicarFiltros() {
+                const esconder = toggle.checked;
+                // Pega o que foi digitado, joga pra minúsculo e tira o "#" se a pessoa digitar
+                const termo = search.value.toLowerCase().replace('#', '').trim();
+
+                cards.forEach(card => {
+                    const isEntregue = card.classList.contains('pedido-entregue');
+                    const titulo = card.querySelector('.titulo-pedido').innerText.toLowerCase();
+
+                    let mostrar = true;
+
+                    // Regra 1: Ocultar Entregues
+                    if (esconder && isEntregue) mostrar = false;
+
+                    // Regra 2: Pesquisa por Número
+                    if (termo !== '' && !titulo.includes(termo)) mostrar = false;
+
+                    card.style.display = mostrar ? 'block' : 'none';
                 });
 
-                // Salva a nova preferência na memória do navegador
-                localStorage.setItem('ocultar_entregues_celestina', toggle.checked);
+                localStorage.setItem('ocultar_entregues_celestina', esconder);
             }
 
-            // 3. Quando o botão for clicado, aplica o filtro na hora!
-            toggle.addEventListener('change', aplicarFiltro);
+            // Dispara quando clica no switch ou quando digita na barra
+            toggle.addEventListener('change', aplicarFiltros);
+            search.addEventListener('input', aplicarFiltros);
 
-            // 4. Aplica o filtro assim que a tela abre
-            aplicarFiltro();
+            aplicarFiltros();
         });
     </script>
 </body>
