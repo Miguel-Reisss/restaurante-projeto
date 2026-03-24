@@ -20,25 +20,34 @@ class FuncionariosController
             return;
         }
 
-        // Pega o que foi digitado na tela
-        $usuario = $_POST['usuario'] ?? '';
+        // Pega o que foi digitado na tela (o campo ainda chama 'usuario' no formulário, mas agora ele recebe o e-mail)
+        $email = trim($_POST['usuario'] ?? '');
         $senha = $_POST['senha'] ?? '';
 
-        // VERIFICAÇÃO FIXA: Usuário 'admin' e Senha '123456'
-        if ($usuario === 'admin' && $senha === '123456') {
+        // 1. Busca o funcionário no banco de dados usando o e-mail
+        $funcionario = $this->funcionariosModel->buscarPorEmail($email);
 
-            // Cria a sessão de administrador
-            $_SESSION['usuario_id'] = 1;
-            $_SESSION['usuario_nome'] = 'Administrador';
-            $_SESSION['nivel_acesso'] = 'admin';
+        // 2. Verifica se achou alguém e se a senha bate
+        // NOTA: O password_verify checa a senha nova (criptografada), 
+        // e o '===' checa a senha do admin se ela tiver sido criada manualmente sem criptografia.
+        if ($funcionario && (password_verify($senha, $funcionario['senha_hash']) || $senha === $funcionario['senha_hash'])) {
 
-            // Redireciona para o painel de pedidos
-            header('Location: index.php?controller=pedido&action=index');
+            // Cria a sessão com os dados reais do banco
+            $_SESSION['usuario_id'] = $funcionario['id'];
+            $_SESSION['usuario_nome'] = $funcionario['nome'];
+            $_SESSION['nivel_acesso'] = $funcionario['nivel_acesso'];
+
+            // Se for admin, vai pro painel do CEO. Se for garçom/caixa, vai pra tela de Pedidos Ativos.
+            if ($funcionario['nivel_acesso'] === 'admin') {
+                header('Location: index.php?controller=admin&action=index');
+            } else {
+                header('Location: index.php?controller=pedido&action=index');
+            }
             exit;
         } else {
-            // Se errar a palavra admin ou a senha 123456, mostra o erro e volta
+            // Se errar a senha ou e-mail, mostra o erro e volta
             echo "<script>
-                    alert('Usuário ou senha incorretos!');
+                    alert('E-mail ou senha incorretos!');
                     window.location.href = 'index.php?page=login';
                   </script>";
             exit;

@@ -17,6 +17,21 @@ class Produto
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([$nome, $descricao, $preco, $categoria_id, $imagem, $tem_tamanhos, $preco_p, $preco_m, $preco_g]);
     }
+    // Atualiza um produto existente
+    public function atualizar($id, $nome, $descricao, $preco, $categoria_id, $imagem, $tem_tamanhos = 0, $preco_p = null, $preco_m = null, $preco_g = null)
+    {
+        if ($imagem) {
+            // Se enviou uma foto nova, atualiza tudo
+            $sql = "UPDATE produtos SET nome=?, descricao=?, preco=?, categoria_id=?, imagem=?, tem_tamanhos=?, preco_p=?, preco_m=?, preco_g=? WHERE id=?";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([$nome, $descricao, $preco, $categoria_id, $imagem, $tem_tamanhos, $preco_p, $preco_m, $preco_g, $id]);
+        } else {
+            // Se NÃO enviou foto nova, atualiza o resto e mantém a foto antiga
+            $sql = "UPDATE produtos SET nome=?, descricao=?, preco=?, categoria_id=?, tem_tamanhos=?, preco_p=?, preco_m=?, preco_g=? WHERE id=?";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([$nome, $descricao, $preco, $categoria_id, $tem_tamanhos, $preco_p, $preco_m, $preco_g, $id]);
+        }
+    }
     // Lista todos os produtos para a tela do CEO
     public function listarTodos()
     {

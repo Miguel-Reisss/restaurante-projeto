@@ -97,7 +97,7 @@
 
 <body>
 
-   
+
 
     <div class="login-card">
 
@@ -108,10 +108,10 @@
         <form action="index.php?controller=funcionarios&action=login" method="POST">
 
             <div class="mb-3">
-                <label for="usuario" class="form-label">Usuário</label>
+                <label for="usuario" class="form-label fw-bold text-muted">E-mail de Acesso</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="ph ph-user"></i></span>
-                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Digite seu usuário" required>
+                    <span class="input-group-text bg-white"><i class="ph ph-envelope"></i></span>
+                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="E-mail" required>
                 </div>
             </div>
 
@@ -130,7 +130,7 @@
         </form>
     </div>
 
-   
+
 </body>
 
 </html>
