@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.1deb1+deb12u1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Tempo de geração: 24/03/2026 às 21:41
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Host: localhost:3306
+-- Tempo de geração: 25/03/2026 às 13:42
+-- Versão do servidor: 10.11.14-MariaDB-0+deb12u2
+-- Versão do PHP: 8.2.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -81,16 +81,6 @@ CREATE TABLE `itens_pedido` (
   `subtotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Despejando dados para a tabela `itens_pedido`
---
-
-INSERT INTO `itens_pedido` (`id`, `id_pedido`, `id_produto`, `nome`, `quantidade`, `subtotal`) VALUES
-(15, 42, 0, 'Hambúrguer Artesanal', 1, 22.00),
-(16, 43, 0, 'Suco de Limão (M)', 1, 12.00),
-(17, 43, 0, 'Smash Burger Duplo', 1, 30.00),
-(18, 44, 0, 'Smash Burger Duplo', 1, 30.00);
-
 -- --------------------------------------------------------
 
 --
@@ -101,24 +91,25 @@ CREATE TABLE `mesas` (
   `id` int(11) NOT NULL,
   `numero` int(11) NOT NULL,
   `capacidade` int(11) NOT NULL,
-  `status` enum('livre','ocupada','manutencao') DEFAULT 'livre'
+  `status` enum('livre','ocupada','manutencao') DEFAULT 'livre',
+  `codigo_acesso` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Despejando dados para a tabela `mesas`
 --
 
-INSERT INTO `mesas` (`id`, `numero`, `capacidade`, `status`) VALUES
-(2, 1, 2, 'livre'),
-(4, 2, 10, 'livre'),
-(5, 5, 5, 'livre'),
-(6, 3, 6, 'livre'),
-(7, 4, 5, 'livre'),
-(8, 6, 3, 'livre'),
-(9, 7, 2, 'livre'),
-(10, 8, 4, 'livre'),
-(11, 9, 2, 'livre'),
-(12, 10, 4, 'livre');
+INSERT INTO `mesas` (`id`, `numero`, `capacidade`, `status`, `codigo_acesso`) VALUES
+(2, 1, 2, 'livre', '0D56'),
+(4, 2, 10, 'livre', 'E81E'),
+(5, 5, 5, 'livre', '138C'),
+(6, 3, 6, 'livre', '5C3C'),
+(7, 4, 5, 'livre', '7DE6'),
+(8, 6, 3, 'livre', 'F175'),
+(9, 7, 2, 'livre', '4576'),
+(10, 8, 4, 'livre', 'FDCC'),
+(11, 9, 2, 'livre', 'CAD4'),
+(12, 10, 4, 'livre', '8350');
 
 -- --------------------------------------------------------
 
@@ -146,7 +137,12 @@ INSERT INTO `pagamentos` (`id`, `id_pedido`, `metodo`, `valor`, `troco_para`, `s
 (15, 41, 'Cartão de Débito', 42.00, NULL, 'concluido', '2026-03-24 14:11:35'),
 (16, 42, 'Pix', 22.00, NULL, 'concluido', '2026-03-24 14:15:47'),
 (17, 43, 'Cartão de Débito', 42.00, NULL, 'concluido', '2026-03-24 14:39:40'),
-(18, 44, 'Cartão de Crédito', 30.00, NULL, 'concluido', '2026-03-24 20:35:25');
+(18, 45, 'Cartão de Crédito', 42.00, NULL, 'concluido', '2026-03-25 12:06:42'),
+(19, 46, 'Cartão de Crédito', 22.00, NULL, 'concluido', '2026-03-25 12:18:35'),
+(20, 47, 'Cartão de Débito', 22.00, NULL, 'concluido', '2026-03-25 12:19:13'),
+(21, 48, 'Cartão de Crédito', 22.00, NULL, 'concluido', '2026-03-25 12:24:18'),
+(22, 49, 'Cartão de Débito', 67.00, NULL, 'concluido', '2026-03-25 12:26:25'),
+(23, 50, 'Cartão de Débito', 25.00, NULL, 'concluido', '2026-03-25 12:26:42');
 
 -- --------------------------------------------------------
 
@@ -164,15 +160,6 @@ CREATE TABLE `pedidos` (
   `observacoes` text DEFAULT NULL,
   `data_criacao` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Despejando dados para a tabela `pedidos`
---
-
-INSERT INTO `pedidos` (`id`, `id_mesa`, `tipo`, `status`, `total`, `itens_resumo`, `observacoes`, `data_criacao`) VALUES
-(42, 10, 'salao', 'pronto', 22.00, '1x Hambúrguer Artesanal', 'tirar cebola', '2026-03-24 11:15:47'),
-(43, 2, 'salao', 'aberto', 42.00, '1x Suco de Limão (M)\n1x Smash Burger Duplo', 'tirar tudo', '2026-03-24 11:39:40'),
-(44, 5, 'salao', 'aberto', 30.00, '1x Smash Burger Duplo', '', '2026-03-24 17:35:25');
 
 -- --------------------------------------------------------
 
@@ -311,7 +298,7 @@ ALTER TABLE `funcionarios`
 -- AUTO_INCREMENT de tabela `itens_pedido`
 --
 ALTER TABLE `itens_pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de tabela `mesas`
@@ -323,13 +310,13 @@ ALTER TABLE `mesas`
 -- AUTO_INCREMENT de tabela `pagamentos`
 --
 ALTER TABLE `pagamentos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
