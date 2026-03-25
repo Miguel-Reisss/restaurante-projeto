@@ -29,11 +29,20 @@ class Mesa {
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([$id]);
     }
+    
     public function atualizarStatusPorNumero($numero, $status)
     {
         $sql = "UPDATE mesas SET status = ? WHERE numero = ?";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([$status, $numero]);
+    }
+
+    // Busca a mesa pelo código digitado pelo cliente
+    public function buscarPorCodigo($codigo) {
+        $sql = "SELECT * FROM mesas WHERE codigo_acesso = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([strtoupper($codigo)]); // strtoupper para não dar erro de maiúscula/minúscula
+        return $stmt->fetch();
     }
 }
 ?>

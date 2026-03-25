@@ -229,16 +229,12 @@
     </div>
 
     <script>
-   // 1. RECUPERA OS DADOS DA TELA ANTERIOR
+        // 1. RECUPERA OS DADOS DA TELA ANTERIOR
         let carrinho = JSON.parse(localStorage.getItem('carrinho_celestina')) || {};
         let total = 0;
         
-        // Removemos a palavra "Itens do Pedido:" para ficar mais limpo
-        let resumoTexto = "";
-
         for (let nome in carrinho) {
             total += carrinho[nome].preco * carrinho[nome].qtd;
-            resumoTexto += `${carrinho[nome].qtd}x ${nome}\n`;
         }
 
         // Mostra o total na tela
@@ -252,10 +248,10 @@
         const mesaCliente = localStorage.getItem('mesa_celestina') || '1'; // Padrão 1 se não informou
         const obsCliente = localStorage.getItem('obs_celestina') || '';
 
+        // Envia para o formulário
         document.getElementById('input-mesa').value = mesaCliente;
+        document.getElementById('input-obs').value = obsCliente;
 
-        // Junta APENAS os lanches com as observações do cliente (ex: tirar cebola)
-        document.getElementById('input-obs').value = resumoTexto + (obsCliente ? `\nObs: ${obsCliente}` : '');
 
         // 2. LÓGICA DO TROCO (Aparece só quando clica em dinheiro)
         const radios = document.querySelectorAll('input[name="metodo_pagamento"]');
@@ -282,13 +278,8 @@
             inputCarrinho.value = JSON.stringify(carrinho);
             this.appendChild(inputCarrinho);
 
-            // ATENÇÃO: Nós APAGAMOS a parte que escrevia "Pagamento: X" nas observações!
-            // Agora as observações vão limpas só com os lanches para o cozinheiro.
-
-            // Limpa o carrinho do navegador do cliente após enviar o pedido
+            // Não apagamos mais a mesa_celestina aqui, apenas o carrinho!
             localStorage.removeItem('carrinho_celestina');
-            localStorage.removeItem('mesa_celestina');
-            localStorage.removeItem('obs_celestina');
         });
     </script>
 </body>

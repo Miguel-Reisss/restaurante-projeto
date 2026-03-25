@@ -54,8 +54,26 @@
         </div>
         <h2 class="fw-bold mb-3">Tudo Certo!</h2>
         <p class="text-muted mb-4">Seu pedido foi enviado para a cozinha com sucesso. Por favor, aguarde em sua mesa.</p>
-        <a href="index.php?page=home" class="btn btn-lg w-100" style="background-color: #D32F2F; color: white; border-radius: 8px; font-weight: bold;">
+        <button onclick="fazerNovoPedido()" class="btn btn-lg fw-bold" style="background-color: #D32F2F; color: white;">
             Fazer Novo Pedido
+        </button>
+
+        <script>
+            // 1. Limpa o carrinho e a observação antiga para o novo pedido não ir duplicado!
+            localStorage.removeItem('carrinho_celestina');
+            localStorage.removeItem('obs_celestina');
+
+            // 2. Função inteligente para voltar pro cardápio
+            function fazerNovoPedido() {
+                const mesaSalva = localStorage.getItem('mesa_celestina');
+                if (mesaSalva) {
+                    // Se ele já tem a mesa, pula a tela inicial e vai direto pro cardápio dele!
+                    window.location.href = 'index.php?page=cardapio&mesa=' + mesaSalva;
+                } else {
+                    window.location.href = 'index.php?page=home';
+                }
+            }
+        </script>
         </a>
     </div>
 </body>

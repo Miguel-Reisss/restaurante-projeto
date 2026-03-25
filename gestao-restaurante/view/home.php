@@ -118,14 +118,36 @@
 
         <p class="mb-4 opacity-75">Selecione como deseja acessar:</p>
 
-        <a href="index.php?page=cardapio" class="btn-custom btn-cliente">
+        <button type="button" class="btn-custom btn-cliente" data-bs-toggle="modal" data-bs-target="#modalCodigoMesa">
             <i class="ph ph-book-open me-2"></i> Iniciar para Cliente
-        </a>
+        </button>
 
         <a href="index.php?page=login" class="btn-custom btn-admin">
             <i class="ph ph-lock-key me-2"></i> Área do Administrador
         </a>
     </div>
+
+    <div class="modal fade" id="modalCodigoMesa" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header" style="background-color: #D32F2F; color: white; border-radius: 12px 12px 0 0;">
+                    <h5 class="modal-title fw-bold"><i class="ph ph-password me-2"></i>Acessar Mesa</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="index.php?controller=mesa&action=acessarCardapio" method="POST">
+                    <div class="modal-body p-4 text-center">
+                        <p class="text-muted mb-4">Peça ao garçom o <strong>Código de Acesso</strong> da sua mesa para iniciar o pedido.</p>
+                        <input type="text" name="codigo" class="form-control form-control-lg text-center fw-bold" placeholder="EX: A7X9" required autocomplete="off" style="font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px;">
+                    </div>
+                    <div class="modal-footer border-0 pb-4 px-4">
+                        <button type="submit" class="btn btn-lg w-100 fw-bold" style="background-color: #D32F2F; color: white;">Entrar no Cardápio</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     
 </body>

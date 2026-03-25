@@ -10,19 +10,41 @@ class PedidoController
         $this->pedidoModel = new Pedido();
     }
 
-    public function index(): void
+   public function index(): void
     {
         $pedidos = $this->pedidoModel->listarTodos();
-        require 'view/pedidos/index3.php'; // ATENÇÃO: Confirme se o nome do seu arquivo continua sendo index3.php
+        
+        // NOVO: Buscar as mesas para o modal do garçom
+        require_once 'config/conexao.php';
+        $pdo = Conexao::getConnection();
+        $stmt = $pdo->query("SELECT numero, capacidade, status, codigo_acesso FROM mesas ORDER BY numero ASC");
+        $mesas = $stmt->fetchAll();
+        
+        require 'view/pedidos/index3.php';
     }
-
     public function store(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            // 1. Pega o número da mesa
-            $id_mesa = preg_replace('/[^0-9]/', '', $_POST['mesa_id'] ?? '');
-            $numero_mesa = !empty($id_mesa) ? (int)$id_mesa : 1;
+            // 1. Pega o número da mesa (Ex: 10)
+            $numero_mesa_post = preg_replace('/[^0-9]/', '', $_POST['mesa_id'] ?? '');
+            $numero_mesa = !empty($numero_mesa_post) ? (int)$numero_mesa_post : 1;
+
+            // ==========================================
+            // CORREÇÃO: BUSCA O ID REAL DA MESA NO BANCO
+            // ==========================================
+            require_once 'config/conexao.php';
+            $pdo = Conexao::getConnection();
+            $stmtMesa = $pdo->prepare("SELECT id FROM mesas WHERE numero = ?");
+            $stmtMesa->execute([$numero_mesa]);
+            $mesaReal = $stmtMesa->fetch();
+
+            if (!$mesaReal) {
+                echo "<script>alert('Erro: Mesa não encontrada no sistema!'); window.history.back();</script>";
+                exit;
+            }
+            // Esse é o ID verdadeiro que o banco exige! (Ex: 12)
+            $id_real_mesa = $mesaReal['id'];
 
             // ==========================================
             // NOVA LÓGICA: MONTA O RESUMO DOS ITENS
@@ -36,48 +58,41 @@ class PedidoController
                     }
                 }
             }
-            // Remove a quebra de linha do final para ficar perfeito
             $itensResumo = trim($itensResumo);
 
             // ==========================================
-            // LIMPANDO A OBSERVAÇÃO (Separando do JS)
+            // LIMPANDO A OBSERVAÇÃO
             // ==========================================
             $observacaoCliente = $_POST['observacoes'] ?? '';
 
-            // 1. Se o JS mandou o texto com "Obs:" (ex: "1x Lanche... Obs: tirar cebola")
             if (stripos($observacaoCliente, 'Obs:') !== false) {
-                // Ele corta o texto no "Obs:" e pega só a observação real
                 $partes = preg_split('/obs:/i', $observacaoCliente);
                 $observacaoCliente = trim(end($partes));
-            }
-            // 2. Se o JS mandou SÓ os itens e nenhuma observação
-            elseif (trim($observacaoCliente) === $itensResumo) {
+            } elseif (trim($observacaoCliente) === $itensResumo) {
                 $observacaoCliente = '';
-            }
-            // 3. Garantia: Apaga os itens de dentro do texto, sobrando só a observação solta
-            else {
+            } else {
                 $observacaoCliente = trim(str_replace($itensResumo, '', $observacaoCliente));
             }
 
             $dados = [
-                'id_mesa' => $numero_mesa,
+                'id_mesa' => $id_real_mesa, // AQUI NÓS SALVAMOS O ID VERDADEIRO!
                 'tipo' => $_POST['tipo'] ?? '',
                 'status' => 'aberto',
                 'total' => round(floatval($_POST['total']), 2),
-                'observacoes' => $observacaoCliente, // AGORA SALVA SÓ A OBSERVAÇÃO LIMPA!
-                'itens_resumo' => $itensResumo       // E AQUI SÓ A LISTA DE LANCHES!
+                'observacoes' => $observacaoCliente, 
+                'itens_resumo' => $itensResumo       
             ];
 
             try {
-                // 1. Cria o Pedido na tabela 'pedidos'
+                // 1. Cria o Pedido
                 $pedido_id = $this->pedidoModel->criar($dados);
 
-                // 2. Cria o Pagamento na tabela 'pagamentos'
+                // 2. Cria o Pagamento
                 $metodo = $_POST['metodo_pagamento'] ?? 'Não informado';
                 $troco = !empty($_POST['troco_para']) ? floatval($_POST['troco_para']) : null;
                 $this->pedidoModel->salvarPagamento($pedido_id, $metodo, $dados['total'], $troco);
 
-                // 3. Salva os lanches na tabela 'itens_pedido'
+                // 3. Salva os lanches 
                 if (isset($carrinho) && is_array($carrinho)) {
                     foreach ($carrinho as $nome => $item) {
                         $subtotal = $item['preco'] * $item['qtd'];
@@ -100,7 +115,6 @@ class PedidoController
             }
         }
     }
-
     public function atualizarStatus(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

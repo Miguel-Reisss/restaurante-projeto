@@ -8,49 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        body {
-            background-color: #F8F9FA;
-            font-family: sans-serif;
-            overflow-x: hidden;
-        }
-
-        .sidebar {
-            background-color: #2B2D42;
-            min-height: 100vh;
-            color: white;
-            padding-top: 20px;
-        }
-
-        .sidebar .nav-link {
-            color: #adb5bd;
-            margin-bottom: 5px;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        .sidebar .nav-link.active {
-            background-color: #D32F2F;
-            color: white;
-        }
-
-        .sidebar .nav-link:hover:not(.active) {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .card-custom {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .logo-area {
-            font-size: 1.5rem;
-            font-weight: bold;
-            border-bottom: 1px solid #3f425c;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+        body { background-color: #F8F9FA; font-family: sans-serif; overflow-x: hidden; }
+        .sidebar { background-color: #2B2D42; min-height: 100vh; color: white; padding-top: 20px; }
+        .sidebar .nav-link { color: #adb5bd; margin-bottom: 5px; border-radius: 8px; font-weight: 500; }
+        .sidebar .nav-link.active { background-color: #D32F2F; color: white; }
+        .sidebar .nav-link:hover:not(.active) { background-color: rgba(255, 255, 255, 0.1); }
+        .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
+        .logo-area { font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid #3f425c; padding-bottom: 20px; margin-bottom: 20px; text-align: center; }
     </style>
 </head>
 
@@ -198,7 +162,7 @@
                                     <tr>
                                         <th class="ps-4">Mesa</th>
                                         <th>Lugares</th>
-                                        <th>Status</th>
+                                        <th>Código de Acesso</th> <th>Status</th>
                                         <th class="text-center pe-4">Ações</th>
                                     </tr>
                                 </thead>
@@ -207,6 +171,13 @@
                                         <tr>
                                             <td class="ps-4 fw-bold fs-5">Mesa <?= $m['numero'] ?></td>
                                             <td><?= $m['capacidade'] ?> Lugares</td>
+                                            
+                                            <td>
+                                                <span class="badge bg-dark fs-6" style="letter-spacing: 2px;">
+                                                    <?= htmlspecialchars($m['codigo_acesso'] ?? 'GERAR') ?>
+                                                </span>
+                                            </td>
+
                                             <td><?= $m['status'] == 'livre' ? '<span class="badge bg-success">Livre</span>' : '<span class="badge bg-danger">Ocupada</span>' ?></td>
                                             <td class="text-center pe-4">
                                                 <div class="d-flex justify-content-center gap-2">
@@ -463,7 +434,14 @@
                 <div class="modal-body p-4">
                     <form action="index.php?controller=mesa&action=store" method="POST">
                         <div class="mb-3"><label class="form-label fw-bold small">Número *</label><input type="number" name="numero" class="form-control" required></div>
-                        <div class="mb-4"><label class="form-label fw-bold small">Capacidade *</label><input type="number" name="capacidade" class="form-control" required></div><button class="btn btn-lg w-100 fw-bold" style="background-color: #D32F2F; color: white;">Adicionar Mesa</button>
+                        <div class="mb-4"><label class="form-label fw-bold small">Capacidade *</label><input type="number" name="capacidade" class="form-control" required></div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small">Código de Acesso (Deixe vazio para gerar sozinho)</label>
+                            <input type="text" name="codigo_acesso" class="form-control text-uppercase" maxlength="10" placeholder="EX: A7X9">
+                        </div>
+
+                        <button class="btn btn-lg w-100 fw-bold" style="background-color: #D32F2F; color: white;">Adicionar Mesa</button>
                     </form>
                 </div>
             </div>

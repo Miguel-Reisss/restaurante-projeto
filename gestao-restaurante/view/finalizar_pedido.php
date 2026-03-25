@@ -1,12 +1,3 @@
-<?php
-require_once 'config/conexao.php';
-$pdo = Conexao::getConnection();
-
-// Busca as mesas cadastradas e ordena pelo número
-$stmtMesas = $pdo->query("SELECT numero FROM mesas WHERE status = 'livre' ORDER BY numero ASC");
-$mesasCadastradas = $stmtMesas->fetchAll();
-?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -91,13 +82,15 @@ $mesasCadastradas = $stmtMesas->fetchAll();
             border-bottom: none;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             background-color: var(--bg-color);
             color: var(--text-color);
             border-color: var(--border-color);
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             background-color: var(--bg-color);
             color: var(--text-color);
             box-shadow: none;
@@ -120,9 +113,7 @@ $mesasCadastradas = $stmtMesas->fetchAll();
 
     <div class="header mb-4">
         <a href="index.php?page=cardapio" class="btn-voltar" title="Voltar ao Cardápio"><i class="ph ph-arrow-left"></i></a>
-
         <img src="view/midia/logo.png" alt="Celestina Point" style="max-height: 45px; width: auto;">
-
     </div>
 
     <div class="container" style="max-width: 800px;">
@@ -146,13 +137,12 @@ $mesasCadastradas = $stmtMesas->fetchAll();
                 <h5 class="fw-bold mb-3"><i class="ph ph-armchair me-2" style="color: #F4A261;"></i> Informações da Mesa</h5>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small">Número da Mesa *</label>
-                    <select name="mesa_id" class="form-select form-select-lg" required>
-                        <option value="" disabled selected>Selecione a sua mesa...</option>
-                        <?php foreach ($mesasCadastradas as $mesa): ?>
-                            <option value="<?= $mesa['numero'] ?>">Mesa <?= $mesa['numero'] ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <label class="form-label fw-bold">Número da Mesa</label>
+                    <input type="text" id="mesa-display" class="form-control form-control-lg bg-light text-danger fw-bold" readonly value="Buscando mesa...">
+
+                    <input type="hidden" name="mesa_id" id="mesa-hidden" required>
+
+                    <small class="text-muted"><i class="ph ph-qr-code"></i> Identificada automaticamente pelo QR Code.</small>
                 </div>
 
                 <div class="mb-3">
@@ -170,7 +160,7 @@ $mesasCadastradas = $stmtMesas->fetchAll();
                 <div class="container" style="max-width: 800px; padding: 0;">
                     <p class="text-muted-custom small text-center mb-2">Revise seu pedido antes de enviar para a cozinha.</p>
                     <button type="submit" class="btn btn-lg w-100" style="background-color: #D32F2F; color: white; border-radius: 8px; font-weight: bold;">
-                        Enviar Pedido para Cozinha <i class="ph ph-paper-plane-tilt ms-2"></i>
+                        Avançar para Pagamento <i class="ph ph-paper-plane-tilt ms-2"></i>
                     </button>
                 </div>
             </div>
@@ -178,18 +168,29 @@ $mesasCadastradas = $stmtMesas->fetchAll();
     </div>
 
     <script>
-        // LER O CARRINHO NO NOVO FORMATO (OBJETO)
+        // 1. PREENCHE A MESA AUTOMATICAMENTE
+        const numMesa = localStorage.getItem('mesa_celestina');
+
+        if (numMesa) {
+            document.getElementById('mesa-display').value = "Mesa " + numMesa;
+            document.getElementById('mesa-hidden').value = numMesa;
+        } else {
+            document.getElementById('mesa-display').value = "Mesa não identificada!";
+            document.getElementById('mesa-display').classList.replace('text-danger', 'text-warning');
+            alert("Erro: Não foi possível identificar a sua mesa. Por favor, leia o QR Code novamente.");
+        }
+
+
+        // 2. LER O CARRINHO E MOSTRAR NA TELA
         const listaItensDiv = document.getElementById('lista-itens');
         const totalTela = document.getElementById('total-tela');
         const inputTotal = document.getElementById('input-total');
         const formPedido = document.getElementById('form-pedido');
         const obsCliente = document.getElementById('obs-cliente');
-        const inputObservacoes = document.getElementById('input-observacoes');
 
         // Pega o objeto salvo no localStorage
         let carrinho = JSON.parse(localStorage.getItem('carrinho_celestina')) || {};
         let total = 0;
-        let resumoTexto = "Itens do Pedido:\n";
 
         // Verifica se o objeto está vazio
         if (Object.keys(carrinho).length === 0) {
@@ -204,10 +205,7 @@ $mesasCadastradas = $stmtMesas->fetchAll();
 
                 total += subtotalItem;
 
-                // Monta o texto que vai para o banco de dados (ex: 2x Hambúrguer Artesanal)
-                resumoTexto += `${item.qtd}x ${nome}\n`;
-
-                // Desenha na tela (ex: 2x Hambúrguer Artesanal | R$ 71,80)
+                // Desenha na tela
                 listaItensDiv.innerHTML += `
                     <div class="item-carrinho">
                         <div>
@@ -229,21 +227,23 @@ $mesasCadastradas = $stmtMesas->fetchAll();
 
         // Antes de enviar o formulário
         formPedido.addEventListener('submit', function(e) {
-            e.preventDefault(); // Impede o formulário de enviar para o PHP ainda!
+            e.preventDefault(); // Impede o envio direto
 
             if (Object.keys(carrinho).length === 0) {
                 alert("Adicione itens ao pedido antes de finalizar!");
                 return;
             }
 
-            // Pega o número da mesa e a observação e salva no navegador temporariamente
-            const numMesa = document.querySelector('select[name="mesa_id"]').value; // Ajustado aqui para ler o <select>
-            const textoObs = obsCliente.value;
+            if (!numMesa) {
+                alert("Mesa não identificada. Retorne ao QR Code.");
+                return;
+            }
 
-            localStorage.setItem('mesa_celestina', numMesa);
+            // Salva a observação para usar depois, se precisar
+            const textoObs = obsCliente.value;
             localStorage.setItem('obs_celestina', textoObs);
 
-            // Redireciona para a nova tela de pagamento
+            // Redireciona para a tela de pagamento
             window.location.href = 'index.php?page=pagamento';
         });
     </script>

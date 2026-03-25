@@ -97,6 +97,10 @@
                 <button onclick="window.location.reload();" class="btn btn-primary btn-sm fw-bold">
                     <i class="ph ph-arrows-clockwise"></i> Atualizar
                 </button>
+                
+                <button type="button" class="btn btn-dark btn-sm fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#modalCodigosGarcom">
+                    <i class="ph ph-password"></i> Códigos das Mesas
+                </button>
             </div>
         </div>
 
@@ -148,9 +152,9 @@
 
                             <div class="observacoes-box my-3">
                                 <strong class="text-dark">Itens do Pedido:</strong><br>
-                                <span style="font-size: 0.95rem;"><?= nl2br(htmlspecialchars($pedido['itens_resumo'])) ?></span>
+                                <span style="font-size: 0.95rem;"><?= nl2br(htmlspecialchars($pedido['itens_resumo'] ?? '')) ?></span>
 
-                                <?php if (!empty(trim($pedido['observacoes']))): ?>
+                                <?php if (!empty(trim($pedido['observacoes'] ?? ''))): ?>
                                     <hr style="margin: 8px 0; border-color: #ccc;">
                                     <strong class="text-danger">Obs:</strong> <?= htmlspecialchars($pedido['observacoes']) ?>
                                 <?php endif; ?>
@@ -176,6 +180,48 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalCodigosGarcom" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header" style="background-color: #2B2D42; color: white; border-radius: 12px 12px 0 0;">
+                    <h5 class="modal-title fw-bold"><i class="ph ph-password me-2"></i>Códigos de Acesso das Mesas</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table table-hover align-middle mb-0 text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mesa</th>
+                                <th>Status</th>
+                                <th>Código (PIN)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($mesas)): ?>
+                                <?php foreach ($mesas as $m): ?>
+                                    <tr>
+                                        <td class="fw-bold fs-5 text-dark">Mesa <?= htmlspecialchars($m['numero']) ?></td>
+                                        <td><?= $m['status'] == 'livre' ? '<span class="badge bg-success">Livre</span>' : '<span class="badge bg-danger">Ocupada</span>' ?></td>
+                                        <td>
+                                            <span class="badge bg-dark fs-5 py-2 px-3" style="letter-spacing: 3px;">
+                                                <?= htmlspecialchars($m['codigo_acesso'] ?? '---') ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="3" class="text-muted py-4">Nenhuma mesa cadastrada.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggle = document.getElementById('toggleEntregues');

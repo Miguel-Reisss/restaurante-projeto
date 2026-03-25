@@ -6,6 +6,12 @@ $pdo = Conexao::getConnection();
 $stmtCat = $pdo->query("SELECT * FROM categorias ORDER BY id ASC");
 $categorias = $stmtCat->fetchAll();
 
+// Cria um "dicionário" fácil para a gente descobrir o NOME da categoria pelo ID dela
+$nomesCategorias = [];
+foreach ($categorias as $c) {
+    $nomesCategorias[$c['id']] = strtolower($c['nome']);
+}
+
 // Busca os produtos ativos do banco
 $stmtProd = $pdo->query("SELECT * FROM produtos WHERE ativo = 1");
 $produtos = $stmtProd->fetchAll();
@@ -38,153 +44,25 @@ foreach ($produtos as $p) {
             --text-muted-cor: #6c757d;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: sans-serif;
-            padding-bottom: 110px;
-            margin: 0;
-        }
-
-        .header {
-            background-color: var(--header-bg);
-            color: var(--header-text);
-            padding: 15px 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .btn-voltar {
-            background: transparent;
-            border: none;
-            color: var(--header-text);
-            font-size: 1.5rem;
-            position: absolute;
-            left: 20px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            transition: 0.2s;
-        }
-
-        .btn-voltar:hover {
-            transform: scale(1.1);
-            color: var(--header-text);
-        }
-
-        .form-control,
-        .input-group-text,
-        .form-select {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            border-color: var(--border-color);
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: none;
-            border-color: var(--btn-add-bg);
-        }
-
-        .categoria-titulo {
-            margin-top: 2.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #D32F2F;
-        }
-
-        .produto-img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 8px 8px 0 0;
-            margin-bottom: 15px;
-        }
-
-        .produto-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: 0.3s;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--border-color);
-            padding: 15px;
-        }
-
-        .produto-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .preco {
-            color: #D32F2F;
-            font-weight: bold;
-            font-size: 1.3rem;
-            margin-top: 5px;
-        }
-
-        .controle-qtd {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 5px;
-            margin-top: 15px;
-        }
-
-        .btn-qtd {
-            background-color: var(--btn-add-bg);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            width: 35px;
-            height: 35px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-
-        .btn-qtd:hover {
-            background-color: var(--btn-add-hover);
-        }
-
-        .btn-qtd.minus {
-            background-color: #6c757d;
-        }
-
-        .btn-qtd.minus:hover {
-            background-color: #5a6268;
-        }
-
-        .qtd-numero {
-            font-weight: bold;
-            font-size: 1.2rem;
-            width: 40px;
-            text-align: center;
-        }
-
-        .carrinho-bar {
-            background-color: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            z-index: 1000;
-        }
-
-        .texto-legivel {
-            color: var(--text-muted-cor) !important;
-        }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: sans-serif; padding-bottom: 110px; margin: 0; }
+        .header { background-color: var(--header-bg); color: var(--header-text); padding: 15px 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); display: flex; justify-content: center; align-items: center; position: relative; }
+        .btn-voltar { background: transparent; border: none; color: var(--header-text); font-size: 1.5rem; position: absolute; left: 20px; text-decoration: none; display: flex; align-items: center; transition: 0.2s; }
+        .btn-voltar:hover { transform: scale(1.1); color: var(--header-text); }
+        .form-control, .input-group-text, .form-select { background-color: var(--card-bg); color: var(--text-color); border-color: var(--border-color); }
+        .form-control:focus, .form-select:focus { box-shadow: none; border-color: var(--btn-add-bg); }
+        .categoria-titulo { margin-top: 2.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; font-weight: 600; text-transform: uppercase; color: #D32F2F; }
+        .produto-img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px 8px 0 0; margin-bottom: 15px; }
+        .produto-card { background-color: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: 0.3s; height: 100%; display: flex; flex-direction: column; border: 1px solid var(--border-color); padding: 15px; }
+        .produto-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); }
+        .preco { color: #D32F2F; font-weight: bold; font-size: 1.3rem; margin-top: 5px; }
+        .controle-qtd { display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 5px; margin-top: 15px; }
+        .btn-qtd { background-color: var(--btn-add-bg); color: white; border: none; border-radius: 6px; width: 35px; height: 35px; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-qtd:hover { background-color: var(--btn-add-hover); }
+        .btn-qtd.minus { background-color: #6c757d; }
+        .btn-qtd.minus:hover { background-color: #5a6268; }
+        .qtd-numero { font-weight: bold; font-size: 1.2rem; width: 40px; text-align: center; }
+        .carrinho-bar { background-color: var(--card-bg); border-top: 1px solid var(--border-color); z-index: 1000; }
+        .texto-legivel { color: var(--text-muted-cor) !important; }
     </style>
 </head>
 
@@ -220,17 +98,34 @@ foreach ($produtos as $p) {
                                 <p class="texto-legivel small mt-1 mb-2 flex-grow-1"><?= htmlspecialchars($p['descricao']) ?></p>
 
                                 <?php if ($p['tem_tamanhos']): ?>
+                                    
+                                    <?php
+                                        // A MÁGICA DOS NOMES COMEÇA AQUI!
+                                        $nomeCatAtual = $nomesCategorias[$p['categoria_id']] ?? '';
+                                        
+                                        $nomeP = 'Tamanho P';
+                                        $nomeM = 'Tamanho M';
+                                        $nomeG = 'Tamanho G';
+
+                                        // Se for bebida/suco/refrigerante, troca as palavras
+                                        if (strpos($nomeCatAtual, 'bebida') !== false || strpos($nomeCatAtual, 'suco') !== false || strpos($nomeCatAtual, 'refrigerante') !== false) {
+                                            $nomeP = 'Lata / 300ml';
+                                            $nomeM = '600ml / 500ml';
+                                            $nomeG = '2 Litros / Jarra';
+                                        }
+                                    ?>
+
                                     <select class="form-select form-select-sm mb-2 select-tamanho">
                                         <?php if (!empty($p['preco_p']) && $p['preco_p'] > 0): ?>
-                                            <option value="P" data-preco="<?= $p['preco_p'] ?>">Tamanho P</option>
+                                            <option value="P" data-preco="<?= $p['preco_p'] ?>"><?= $nomeP ?></option>
                                         <?php endif; ?>
 
                                         <?php if (!empty($p['preco_m']) && $p['preco_m'] > 0): ?>
-                                            <option value="M" data-preco="<?= $p['preco_m'] ?>" selected>Tamanho M</option>
+                                            <option value="M" data-preco="<?= $p['preco_m'] ?>" selected><?= $nomeM ?></option>
                                         <?php endif; ?>
 
                                         <?php if (!empty($p['preco_g']) && $p['preco_g'] > 0): ?>
-                                            <option value="G" data-preco="<?= $p['preco_g'] ?>">Tamanho G</option>
+                                            <option value="G" data-preco="<?= $p['preco_g'] ?>"><?= $nomeG ?></option>
                                         <?php endif; ?>
                                     </select>
 
@@ -294,6 +189,14 @@ foreach ($produtos as $p) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // ==========================================
+        // CAPTURA A MESA DA URL E SALVA NO CELULAR
+        // ==========================================
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('mesa')) {
+            localStorage.setItem('mesa_celestina', urlParams.get('mesa'));
+        }
+
         let carrinho = JSON.parse(localStorage.getItem('carrinho_celestina')) || {};
         const offcanvas = new bootstrap.Offcanvas(document.getElementById('abaCarrinho'));
 
