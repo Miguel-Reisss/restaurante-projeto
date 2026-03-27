@@ -44,10 +44,14 @@ class Pedido {
 
     // Lista os pedidos para o painel do Admin
     public function listarTodos() {
-        $sql = "SELECT * FROM pedidos ORDER BY id DESC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        // O LEFT JOIN junta o pedido com a mesa para descobrirmos o número real dela
+        $sql = "SELECT pedidos.*, mesas.numero AS numero_da_mesa 
+                FROM pedidos 
+                LEFT JOIN mesas ON pedidos.id_mesa = mesas.id 
+                ORDER BY pedidos.id DESC";
+                
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Atualiza o status (Preparando, Pronto...)

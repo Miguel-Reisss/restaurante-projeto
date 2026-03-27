@@ -289,7 +289,8 @@
                                             <div class="d-flex justify-content-between align-items-start mb-2">
                                                 <div>
                                                     <h6 class="fw-bold mb-0 titulo-pedido-ceo">Pedido #<?= $pedido['id'] ?></h6>
-                                                    <small class="text-muted">Mesa <?= htmlspecialchars($pedido['id_mesa']) ?></small>
+                                                    
+                                                    <small class="text-muted">Mesa <?= htmlspecialchars($pedido['numero_da_mesa'] ?? $pedido['id_mesa']) ?></small> 
                                                 </div>
                                                 <span class="badge <?= $badgeClass ?>"><?= ucfirst($pedido['status']) ?></span>
                                             </div>

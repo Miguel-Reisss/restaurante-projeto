@@ -5,9 +5,9 @@ declare(strict_types=1);
 class Conexao
 {
    
-    private static $host = "10.91.45.61";
-    private static $usuario = "admin";
-    private static $senha = "123456";
+    private static $host = "127.0.0.1";
+    private static $usuario = "root";
+    private static $senha = "";
 
     // O nome EXATO como está na sua base de dados agora (sem espaços à volta!)
     private static $banco = "gestao_restaurante";

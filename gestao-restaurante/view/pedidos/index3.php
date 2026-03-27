@@ -139,8 +139,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h5 class="fw-bold mb-0 titulo-pedido">Pedido #<?= $pedido['id'] ?></h5>
-                                    <span class="text-muted small">Mesa: <?= htmlspecialchars($pedido['id_mesa']) ?></span>
-                                    <br>
+<span class="text-muted small">Mesa: <?= htmlspecialchars($pedido['numero_da_mesa'] ?? $pedido['id_mesa']) ?></span>                                    <br>
                                     <span class="text-muted" style="font-size: 0.75rem;">
                                         <i class="ph ph-clock"></i> <?= $dataFormatada ?>
                                     </span>
