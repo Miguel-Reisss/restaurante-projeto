@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 27/03/2026 às 03:48
+-- Tempo de geração: 27/03/2026 às 15:37
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Versão do PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -81,16 +81,6 @@ CREATE TABLE `itens_pedido` (
   `subtotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Despejando dados para a tabela `itens_pedido`
---
-
-INSERT INTO `itens_pedido` (`id`, `id_pedido`, `id_produto`, `nome`, `quantidade`, `subtotal`) VALUES
-(25, 51, 0, 'Hambúrguer Artesanal', 1, 22.00),
-(26, 51, 0, 'Batata Frita Cheddar & Bacon (P)', 1, 20.00),
-(27, 51, 0, 'Coca-Cola Zero (M)', 1, 10.00),
-(28, 52, 0, 'Hambúrguer Artesanal', 1, 22.00);
-
 -- --------------------------------------------------------
 
 --
@@ -111,7 +101,7 @@ CREATE TABLE `mesas` (
 
 INSERT INTO `mesas` (`id`, `numero`, `capacidade`, `status`, `codigo_acesso`) VALUES
 (2, 1, 2, 'livre', '0D56'),
-(4, 2, 10, 'ocupada', 'E81E'),
+(4, 2, 10, 'livre', 'E81E'),
 (5, 5, 5, 'livre', '138C'),
 (6, 3, 6, 'livre', '5C3C'),
 (7, 4, 5, 'livre', '7DE6'),
@@ -172,14 +162,6 @@ CREATE TABLE `pedidos` (
   `observacoes` text DEFAULT NULL,
   `data_criacao` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Despejando dados para a tabela `pedidos`
---
-
-INSERT INTO `pedidos` (`id`, `id_mesa`, `tipo`, `status`, `total`, `itens_resumo`, `observacoes`, `data_criacao`) VALUES
-(51, 4, 'salao', 'entregue', 52.00, '1x Hambúrguer Artesanal\n1x Batata Frita Cheddar & Bacon (P)\n1x Coca-Cola Zero (M)', 'Marina meu amor!', '2026-03-26 23:22:49'),
-(52, 4, 'salao', 'entregue', 22.00, '1x Hambúrguer Artesanal', '', '2026-03-26 23:24:39');
 
 -- --------------------------------------------------------
 
