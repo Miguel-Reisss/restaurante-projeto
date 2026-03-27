@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1deb1+deb12u1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Tempo de geração: 25/03/2026 às 13:42
--- Versão do servidor: 10.11.14-MariaDB-0+deb12u2
--- Versão do PHP: 8.2.29
+-- Host: 127.0.0.1
+-- Tempo de geração: 27/03/2026 às 03:48
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -81,6 +81,16 @@ CREATE TABLE `itens_pedido` (
   `subtotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Despejando dados para a tabela `itens_pedido`
+--
+
+INSERT INTO `itens_pedido` (`id`, `id_pedido`, `id_produto`, `nome`, `quantidade`, `subtotal`) VALUES
+(25, 51, 0, 'Hambúrguer Artesanal', 1, 22.00),
+(26, 51, 0, 'Batata Frita Cheddar & Bacon (P)', 1, 20.00),
+(27, 51, 0, 'Coca-Cola Zero (M)', 1, 10.00),
+(28, 52, 0, 'Hambúrguer Artesanal', 1, 22.00);
+
 -- --------------------------------------------------------
 
 --
@@ -101,7 +111,7 @@ CREATE TABLE `mesas` (
 
 INSERT INTO `mesas` (`id`, `numero`, `capacidade`, `status`, `codigo_acesso`) VALUES
 (2, 1, 2, 'livre', '0D56'),
-(4, 2, 10, 'livre', 'E81E'),
+(4, 2, 10, 'ocupada', 'E81E'),
 (5, 5, 5, 'livre', '138C'),
 (6, 3, 6, 'livre', '5C3C'),
 (7, 4, 5, 'livre', '7DE6'),
@@ -142,7 +152,9 @@ INSERT INTO `pagamentos` (`id`, `id_pedido`, `metodo`, `valor`, `troco_para`, `s
 (20, 47, 'Cartão de Débito', 22.00, NULL, 'concluido', '2026-03-25 12:19:13'),
 (21, 48, 'Cartão de Crédito', 22.00, NULL, 'concluido', '2026-03-25 12:24:18'),
 (22, 49, 'Cartão de Débito', 67.00, NULL, 'concluido', '2026-03-25 12:26:25'),
-(23, 50, 'Cartão de Débito', 25.00, NULL, 'concluido', '2026-03-25 12:26:42');
+(23, 50, 'Cartão de Débito', 25.00, NULL, 'concluido', '2026-03-25 12:26:42'),
+(24, 51, 'Cartão de Crédito', 52.00, NULL, 'concluido', '2026-03-27 02:22:49'),
+(25, 52, 'Cartão de Crédito', 22.00, NULL, 'concluido', '2026-03-27 02:24:39');
 
 -- --------------------------------------------------------
 
@@ -160,6 +172,14 @@ CREATE TABLE `pedidos` (
   `observacoes` text DEFAULT NULL,
   `data_criacao` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `id_mesa`, `tipo`, `status`, `total`, `itens_resumo`, `observacoes`, `data_criacao`) VALUES
+(51, 4, 'salao', 'entregue', 52.00, '1x Hambúrguer Artesanal\n1x Batata Frita Cheddar & Bacon (P)\n1x Coca-Cola Zero (M)', 'Marina meu amor!', '2026-03-26 23:22:49'),
+(52, 4, 'salao', 'entregue', 22.00, '1x Hambúrguer Artesanal', '', '2026-03-26 23:24:39');
 
 -- --------------------------------------------------------
 
@@ -286,7 +306,7 @@ ALTER TABLE `valores_produtos_tamanho`
 -- AUTO_INCREMENT de tabela `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `funcionarios`
@@ -298,7 +318,7 @@ ALTER TABLE `funcionarios`
 -- AUTO_INCREMENT de tabela `itens_pedido`
 --
 ALTER TABLE `itens_pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de tabela `mesas`
@@ -310,19 +330,19 @@ ALTER TABLE `mesas`
 -- AUTO_INCREMENT de tabela `pagamentos`
 --
 ALTER TABLE `pagamentos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de tabela `valores_produtos_tamanho`
