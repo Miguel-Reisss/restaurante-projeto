@@ -12,6 +12,7 @@ class FuncionariosController
     {
         $this->funcionariosModel = new Funcionarios();
     }
+    
     public function login(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -31,6 +32,11 @@ class FuncionariosController
         // NOTA: O password_verify checa a senha nova (criptografada), 
         // e o '===' checa a senha do admin se ela tiver sido criada manualmente sem criptografia.
         if ($funcionario && (password_verify($senha, $funcionario['senha_hash']) || $senha === $funcionario['senha_hash'])) {
+            
+            // Inicia a sessão se não estiver iniciada
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
 
             // Cria a sessão com os dados reais do banco
             $_SESSION['usuario_id'] = $funcionario['id'];
@@ -44,6 +50,7 @@ class FuncionariosController
                 header('Location: index.php?controller=pedido&action=index');
             }
             exit;
+            
         } else {
             // Se errar a senha ou e-mail, mostra o erro e volta
             echo "<script>
@@ -154,4 +161,3 @@ class FuncionariosController
         exit;
     }
 }
-
