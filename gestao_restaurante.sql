@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 27/03/2026 às 15:37
+-- Tempo de geração: 30/03/2026 às 04:15
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.0.30
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -63,7 +63,7 @@ CREATE TABLE `funcionarios` (
 --
 
 INSERT INTO `funcionarios` (`id`, `nome`, `email`, `senha_hash`, `nivel_acesso`, `ativo`, `data_criacao`) VALUES
-(1, 'Administrador', 'admin@restaurante.com', '123456', 'admin', 1, '2026-03-12 09:00:15'),
+(1, 'Administrador', 'admin@restaurante.com', '$2y$10$nQBNn4HSkzdd8jt1jgjcI.LEQC5IQRA/iYOCSUA0N.jj82jJM/HbG', 'admin', 1, '2026-03-12 09:00:15'),
 (2, 'Dian', 'dian@restaurante.com', '$2y$10$9KDZWH.UKPENXJ2vQl27/.wLc8zjW3HjgHbc2G6aSgq9xuyyAOVvK', 'garcom', 1, '2026-03-24 08:47:46');
 
 -- --------------------------------------------------------
@@ -100,7 +100,7 @@ CREATE TABLE `mesas` (
 --
 
 INSERT INTO `mesas` (`id`, `numero`, `capacidade`, `status`, `codigo_acesso`) VALUES
-(2, 1, 2, 'livre', '0D56'),
+(2, 1, 2, 'ocupada', '0D56'),
 (4, 2, 10, 'livre', 'E81E'),
 (5, 5, 5, 'livre', '138C'),
 (6, 3, 6, 'livre', '5C3C'),
@@ -144,7 +144,8 @@ INSERT INTO `pagamentos` (`id`, `id_pedido`, `metodo`, `valor`, `troco_para`, `s
 (22, 49, 'Cartão de Débito', 67.00, NULL, 'concluido', '2026-03-25 12:26:25'),
 (23, 50, 'Cartão de Débito', 25.00, NULL, 'concluido', '2026-03-25 12:26:42'),
 (24, 51, 'Cartão de Crédito', 52.00, NULL, 'concluido', '2026-03-27 02:22:49'),
-(25, 52, 'Cartão de Crédito', 22.00, NULL, 'concluido', '2026-03-27 02:24:39');
+(25, 52, 'Cartão de Crédito', 22.00, NULL, 'concluido', '2026-03-27 02:24:39'),
+(26, 53, 'Cartão de Crédito', 32.00, NULL, 'concluido', '2026-03-30 02:03:39');
 
 -- --------------------------------------------------------
 
@@ -300,7 +301,7 @@ ALTER TABLE `funcionarios`
 -- AUTO_INCREMENT de tabela `itens_pedido`
 --
 ALTER TABLE `itens_pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de tabela `mesas`
@@ -312,13 +313,13 @@ ALTER TABLE `mesas`
 -- AUTO_INCREMENT de tabela `pagamentos`
 --
 ALTER TABLE `pagamentos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
