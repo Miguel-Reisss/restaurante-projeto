@@ -8,11 +8,19 @@ class Mesa {
         $this->conn = Conexao::getConnection();
     }
 
-    // Cria uma nova mesa no banco (por padrão, ela nasce com o status 'livre')
-    public function criar($numero, $capacidade) {
-        $sql = "INSERT INTO mesas (numero, capacidade, status) VALUES (?, ?, 'livre')";
+    // ==========================================
+    // CORRIGIDO: Agora recebe o array $dados e salva o código de acesso!
+    // ==========================================
+    public function criar($dados) {
+        $sql = "INSERT INTO mesas (numero, capacidade, status, codigo_acesso) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([$numero, $capacidade]);
+        
+        return $stmt->execute([
+            $dados['numero'], 
+            $dados['capacidade'], 
+            $dados['status'], 
+            $dados['codigo_acesso']
+        ]);
     }
 
     // Lista todas as mesas em ordem crescente

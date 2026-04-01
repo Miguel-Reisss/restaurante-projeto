@@ -11,14 +11,34 @@ class MesaController {
 
 
     // O store agora salva a mesa e te joga de volta pro PAINEL DO CEO
-    public function store(): void {
+    public function store(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $numero = $_POST['numero'];
-            $capacidade = $_POST['capacidade'];
-
-            $this->mesaModel->criar($numero, $capacidade);
             
-            // REDIRECIONA PARA O PAINEL DO CEO!
+            // 1. Pega os dados do formulário
+            $numero = $_POST['numero'] ?? '';
+            $capacidade = $_POST['capacidade'] ?? '';
+            $codigo_acesso = trim($_POST['codigo_acesso'] ?? '');
+
+            // 2. A MÁGICA: Se o campo código de acesso veio vazio, cria um aleatório!
+            if (empty($codigo_acesso)) {
+                // Gera 4 caracteres aleatórios (números e letras) em maiúsculo
+                $codigo_acesso = strtoupper(substr(bin2hex(random_bytes(2)), 0, 4));
+            }
+
+            // 3. Monta os dados para salvar no banco
+            $dados = [
+                'numero' => $numero,
+                'capacidade' => $capacidade,
+                'codigo_acesso' => $codigo_acesso,
+                'status' => 'livre' // Toda mesa nova começa livre
+            ];
+
+            // 4. Salva no banco (usando o model) e volta pro painel
+            require_once 'model/Mesa.php';
+            $mesaModel = new Mesa();
+            $mesaModel->criar($dados);
+
             header('Location: index.php?controller=admin&action=index');
             exit;
         }
