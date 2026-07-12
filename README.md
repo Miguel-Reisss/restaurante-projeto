@@ -2,7 +2,7 @@
 
 Um sistema web completo para gerenciamento de pedidos, mesas e cardápio digital, desenvolvido com foco na agilidade do atendimento e facilidade de gestão.
 
-## 🚀 Funcionalidades
+## 🚀 Funcionalidades 
 
 O sistema é dividido em três áreas principais de acesso:
 
